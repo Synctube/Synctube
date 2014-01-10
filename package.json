@@ -1,0 +1,10 @@
+{
+    "name": "synctube",
+    "version": "0.0.0",
+    "description": "Realtime web video synchronization.",
+    "author": "Henry Merriam <henry@zephyrhosting.net>",
+    "dependencies": {
+    },
+    "engines": { "node": "0.10.x" },
+    "private": true
+}

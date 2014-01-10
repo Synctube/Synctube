@@ -1,0 +1,19 @@
+# From https://github.com/github/gitignore/blob/8209359a888a31b1fd94a4e5ef0524ea6b61e25c/Node.gitignore
+
+lib-cov
+lcov.info
+*.seed
+*.log
+*.csv
+*.dat
+*.out
+*.pid
+*.gz
+
+pids
+logs
+results
+build
+.grunt
+
+node_modules

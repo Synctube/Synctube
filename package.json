@@ -4,6 +4,7 @@
     "description": "Realtime web video synchronization.",
     "author": "Henry Merriam <henry@zephyrhosting.net>",
     "dependencies": {
+        "request": "2.31.x",
         "express": "3.4.x"
     },
     "engines": { "node": "0.10.x" },

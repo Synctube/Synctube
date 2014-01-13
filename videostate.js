@@ -84,9 +84,12 @@ function VideoState () {
 			if (this.video === null) {
 				return;
 			}
+			var old = this.time;
 			updateTime(value);
 			setTimer();
-			this.emit('seek');
+			if (value !== old) {
+				this.emit('seek');
+			}
 		},
 		enumerable: true,
 	});

@@ -22,15 +22,23 @@ MutableList.prototype.find = function (id) {
 };
 
 /**
+ * Inserts an `Entry` immediately before another entry.
+ */
+
+MutableList.prototype.insert = function (entry, before) {
+	entry.head = before;
+	entry.tail = before.tail;
+	entry.head.tail = entry.tail.head = entry;
+	this.entries[entry.id] = entry;
+}
+
+/**
  * Creates a new `Entry` with the given value and appends it to the list.
  */
 
 MutableList.prototype.push = function (value) {
 	var entry = new Entry(value);
-	entry.head = this;
-	entry.tail = this.tail;
-	entry.head.tail = entry.tail.head = entry;
-	this.entries[entry.id] = entry;
+	this.insert(entry, this);
 	return entry;
 };
 
@@ -58,9 +66,7 @@ MutableList.prototype.skipmove = function (entry, forward, skip) {
 	while (node != entry) {
 		if (_skip[node.id]) {
 			this.remove(entry);
-			entry.head = forward ? node.head : node;
-			entry.tail = entry.head.tail;
-			entry.head.tail = entry.tail.head = entry;
+			this.insert(entry, forward ? node.head : node);
 			return;
 		}
 		node = forward ? node.tail : node.head;

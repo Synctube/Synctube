@@ -43,6 +43,7 @@ function VideoState () {
 				this.emit('change');
 			}
 		},
+		enumerable: true,
 	});
 
 	/**
@@ -65,6 +66,7 @@ function VideoState () {
 				this.emit(value ? 'play' : 'pause');
 			}
 		},
+		enumerable: true,
 	});
 
 	/**
@@ -86,6 +88,7 @@ function VideoState () {
 			setTimer();
 			this.emit('seek');
 		},
+		enumerable: true,
 	});
 
 	function updateTime (value) {

@@ -1,4 +1,10 @@
 /**
+ * Module dependencies.
+ */
+
+var events = require('events');
+
+/**
  * Module exports.
  */
 
@@ -11,6 +17,16 @@ module.exports = exports = MutableList;
 function MutableList () {
 	this.head = this.tail = this;
 	this.entries = {};
+	this._immediate = false;
+}
+
+function changed () {
+	if (this._immediate) { return; }
+	this._immediate = true;
+	setImmediate(function (self) {
+		self._immediate = false;
+		self.emit('changed');
+	}, this);
 }
 
 /**
@@ -30,6 +46,7 @@ MutableList.prototype.insert = function (entry, before) {
 	entry.tail = before.tail;
 	entry.head.tail = entry.tail.head = entry;
 	this.entries[entry.id] = entry;
+	changed.call(this);
 }
 
 /**
@@ -51,6 +68,7 @@ MutableList.prototype.remove = function (entry) {
 	entry.tail.head = entry.head;
 	entry.head = entry.tail = null;
 	delete this.entries[entry.id];
+	changed.call(this);
 };
 
 /**
@@ -86,6 +104,12 @@ MutableList.prototype.toArray = function () {
 	}
 	return array;
 };
+
+/**
+ * Extend EventEmitter.
+ */
+
+MutableList.prototype.__proto__ = events.EventEmitter.prototype;
 
 /**
  * Entry in a `MutableList`.

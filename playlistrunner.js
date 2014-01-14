@@ -25,6 +25,13 @@ function PlaylistRunner () {
 		postdelay: 1,
 	}
 
+	Object.defineProperty(this, 'current', {
+		get: function () {
+			return _current;
+		},
+		enumerable: true,
+	});
+
 	var self = this;
 	var _timer = null;
 	var _current = null;

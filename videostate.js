@@ -16,6 +16,8 @@ module.exports = exports = VideoState;
  */
 
 function VideoState () {
+	events.EventEmitter.call(this);
+
 	var _video = null;
 	var _playing = false;
 	var _time = 0;

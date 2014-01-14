@@ -16,6 +16,8 @@ module.exports = exports = MutableList;
  */
 
 function MutableList () {
+	events.EventEmitter.call(this);
+
 	Object.defineProperty(this, 'head', {
 		value: this,
 		enumerable: false,

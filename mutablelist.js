@@ -2,6 +2,7 @@
  * Module dependencies.
  */
 
+var asyncevent = require('./asyncevent.js');
 var events = require('events');
 
 /**
@@ -17,17 +18,11 @@ module.exports = exports = MutableList;
 function MutableList () {
 	this.head = this.tail = this;
 	this.entries = {};
-	this._immediate = false;
 }
 
-function changed () {
-	if (this._immediate) { return; }
-	this._immediate = true;
-	setImmediate(function (self) {
-		self._immediate = false;
-		self.emit('changed');
-	}, this);
-}
+var changed = asyncevent(function () {
+	this.emit('changed');
+});
 
 /**
  * Returns the `Entry` with the given identifier, or `null` if it could not be found.

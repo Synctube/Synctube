@@ -16,7 +16,18 @@ module.exports = exports = MutableList;
  */
 
 function MutableList () {
-	this.head = this.tail = this;
+	Object.defineProperty(this, 'head', {
+		value: this,
+		enumerable: false,
+		writable: true,
+	});
+
+	Object.defineProperty(this, 'tail', {
+		value: this,
+		enumerable: false,
+		writable: true,
+	});
+
 	this.entries = {};
 }
 

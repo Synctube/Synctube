@@ -3,7 +3,7 @@
  */
 
 var asyncevent = require('./asyncevent.js');
-var events = require('events');
+var CleanEventEmitter = require('./cleaneventemitter.js');
 
 /**
  * Module exports.
@@ -16,7 +16,7 @@ module.exports = exports = MutableList;
  */
 
 function MutableList () {
-	events.EventEmitter.call(this);
+	CleanEventEmitter.call(this);
 
 	Object.defineProperty(this, 'head', {
 		value: this,
@@ -117,7 +117,7 @@ MutableList.prototype.toArray = function () {
  * Extend EventEmitter.
  */
 
-MutableList.prototype.__proto__ = events.EventEmitter.prototype;
+MutableList.prototype.__proto__ = CleanEventEmitter.prototype;
 
 /**
  * Entry in a `MutableList`.

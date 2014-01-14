@@ -2,7 +2,7 @@
  * Module dependencies.
  */
 
-var events = require('events');
+var CleanEventEmitter = require('./cleaneventemitter.js');
 var VideoData = require('./videodata.js');
 
 /**
@@ -16,7 +16,7 @@ module.exports = exports = VideoState;
  */
 
 function VideoState () {
-	events.EventEmitter.call(this);
+	CleanEventEmitter.call(this);
 
 	var _video = null;
 	var _playing = false;
@@ -119,4 +119,4 @@ function VideoState () {
  * Extend EventEmitter.
  */
 
-VideoState.prototype.__proto__ = events.EventEmitter.prototype;
+VideoState.prototype.__proto__ = CleanEventEmitter.prototype;

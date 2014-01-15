@@ -1,6 +1,9 @@
 var express = require('express');
 var app = express();
 
+var sockets = require('./sockets.js');
+
 app.use(express.static(__dirname + '/static'));
 
-app.listen(3000);
+var server = app.listen(3000);
+sockets.listen(server);

@@ -12,6 +12,12 @@ var Room = require('./room.js');
 var _rooms = {};
 
 /**
+ * Expiration timers.
+ */
+
+var _timers = {};
+
+/**
  * Module exports.
  */
 
@@ -25,7 +31,8 @@ var rooms = module.exports = exports = {
 		var room = _rooms[name];
 		if (!room) {
 			room = _rooms[name] = new Room(name);
-			room.on('empty', destroy);
+			room.on('empty', timeout);
+			room.on('join', reset)
 			rooms.emit('create', room);
 		}
 		return room;
@@ -42,11 +49,29 @@ var rooms = module.exports = exports = {
 		}
 		return arr;
 	},
+
+	/**
+	 * Timeout (in seconds) for empty rooms.
+	 */
+	timeout: 30 * 60,
 };
 
-function destroy () {
-	delete _rooms[this.name];
-	rooms.emit('destroy', this);
+function destroy (room) {
+	delete _rooms[room.name];
+	delete _timers[room.name];
+	rooms.emit('destroy', room);
+}
+
+function timeout () {
+	_timers[this.name] = setTimeout(destroy, rooms.timeout * 1000, this);
+}
+
+function reset () {
+	var timer = _timers[this.name];
+	if (timer) {
+		clearTimeout(timer);
+		delete _timers[this.name];
+	}
 }
 
 /**

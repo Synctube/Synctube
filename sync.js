@@ -3,12 +3,12 @@
  */
 
 var asyncevent = require('./asyncevent.js');
+var metadata = require('./metadata.js');
 var PlaylistRunner = require('./playlistrunner.js');
 var rooms = require('./rooms.js');
 var safesocket = require('safesocket');
 var sockets = require('./sockets.js');
 var Video = require('./video.js');
-var VideoData = require('./videodata.js');
 
 /**
  * Augment rooms with PlaylistRunner.
@@ -72,7 +72,7 @@ sockets.on('listen', function (io) {
 		socket.on('add', safesocket(1, function (id, callback) {
 			if (!Video.validId.test(id)) { callback(null); return; }
 			var video = new Video(id);
-			VideoData.Load(video, function (err, data) {
+			metadata.load(video, function (err, data) {
 				if (err) { callback(null); return; }
 				callback(runner.playlist.push(data));
 			});

@@ -72,9 +72,9 @@ sockets.on('listen', function (io) {
 		socket.on('add', safesocket(1, function (id, callback) {
 			if (!Video.validId.test(id)) { callback(null); return; }
 			var video = new Video(id);
-			metadata.load(video, function (err, data) {
+			metadata.load(video, function (err) {
 				if (err) { callback(null); return; }
-				callback(runner.playlist.push(data));
+				callback(runner.playlist.push(video));
 			});
 		}));
 

@@ -21,3 +21,11 @@ function Video (id) {
 	}
 	this.id = id;
 }
+
+/**
+ * Whether this instance has been augmented with length metadata.
+ */
+
+Video.prototype.hasLength = function () {
+	return this.hasOwnProperty('length');
+};

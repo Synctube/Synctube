@@ -3,7 +3,6 @@
  */
 
 var CleanEventEmitter = require('./cleaneventemitter.js');
-var VideoData = require('./videodata.js');
 
 /**
  * Module exports.
@@ -35,8 +34,8 @@ function VideoState () {
 			return _video;
 		},
 		set: function (value) {
-			if ((value !== null) && !(value instanceof VideoData)) {
-				throw new TypeError('Value is not a VideoData');
+			if ((value !== null) && (!(value instanceof Video) || !value.hasLength())) {
+				throw new TypeError('Value is not a Video augmented with metadata');
 			}
 			if (_video !== value) {
 				this.playing = false;

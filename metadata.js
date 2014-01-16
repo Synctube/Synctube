@@ -4,7 +4,6 @@
 
 var pjson = require('./package.json');
 var request = require('request');
-var VideoData = require('./videodata.js');
 
 /**
  * Module exports.
@@ -13,7 +12,7 @@ var VideoData = require('./videodata.js');
 module.exports = exports = {
 
 	/**
-	 * Creates an object with metadata for the given video.
+	 * Augments a `Video` instance with metadata.
 	 */
 
 	load: function (video, callback) {
@@ -26,7 +25,8 @@ module.exports = exports = {
 		}, function (err, res, body) {
 			err = err || body.error;
 			if (err) { callback(err); return; }
-			callback(null, new VideoData(video, body.data.duration));
+			video.length = body.data.duration;
+			callback(null);
 		});
 	},
 };

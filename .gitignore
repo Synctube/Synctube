@@ -17,3 +17,7 @@ build
 .grunt
 
 node_modules
+
+# Generated files
+
+static/style.css

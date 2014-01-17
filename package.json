@@ -9,6 +9,10 @@
         "socket.io": "0.9.x",
         "express": "3.4.x"
     },
+    "devDependencies": {
+        "grunt-contrib-less": "0.9.x",
+        "grunt": "0.4.x"
+    },
     "engines": { "node": "0.10.x" },
     "private": true
 }

@@ -7,6 +7,7 @@ module.exports = function (grunt) {
 				options: {
 					paths: [
 						'less',
+						'bower_components',
 					],
 					compress: true,
 					cleancss: true,

@@ -1,0 +1,7 @@
+{
+	"name": "synctube",
+	"dependencies": {
+		"bootswatch": "3.0.x"
+	},
+	"private": true
+}

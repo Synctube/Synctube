@@ -18,6 +18,10 @@ build
 
 node_modules
 
+# Build tools
+
+bower_components
+
 # Generated files
 
 static/style.css

@@ -1,9 +1,9 @@
 var express = require('express');
 var app = express();
 
-var sockets = require('./sockets.js');
+var sockets = require('./lib/sockets.js');
 
-require('./sync.js');
+require('./lib/sync.js');
 
 app.use(express.static(__dirname + '/static'));
 

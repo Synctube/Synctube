@@ -11,8 +11,11 @@
     },
     "devDependencies": {
         "bower": "1.2.x",
+        "grunt-concurrent": "0.4.x",
         "grunt-contrib-less": "0.9.x",
+        "grunt-contrib-watch": "0.4.x",
         "grunt-cli": "0.1.x",
+        "grunt-nodemon": "0.2.x",
         "grunt": "0.4.x"
     },
     "scripts": {

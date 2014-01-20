@@ -15,6 +15,11 @@ module.exports = function (grunt) {
 			},
 			dev: {
 				files: lessFiles,
+				options: {
+					sourceMap: true,
+					sourceMapFilename: 'static/style.css.map',
+					sourceMapURL: 'style.css.map',
+				},
 			},
 			dist: {
 				options: {

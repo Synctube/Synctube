@@ -61,7 +61,7 @@ module.exports = function (grunt) {
 			options: {
 				clear_cache: true,
 				directory: 'template/',
-				extension: '.html',
+				extension: '',
 			},
 			dist: {
 				files: [

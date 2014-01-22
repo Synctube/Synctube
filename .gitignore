@@ -24,4 +24,5 @@ bower_components
 
 # Generated files
 
+static/index.html
 static/style.css*

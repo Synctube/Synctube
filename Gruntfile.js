@@ -39,6 +39,14 @@ module.exports = function (grunt) {
 					interrupt: true,
 				},
 			},
+			mustache: {
+				files: ['template/**/*'],
+				tasks: ['mustache_render:dist'],
+				options: {
+					atBegin: true,
+					interrupt: true,
+				},
+			},
 			static: {
 				files: [
 					'static/**/*',
@@ -47,6 +55,22 @@ module.exports = function (grunt) {
 				options: {
 					livereload: true,
 				},
+			},
+		},
+		mustache_render: {
+			options: {
+				clear_cache: true,
+				directory: 'template/',
+				extension: '.html',
+			},
+			dist: {
+				files: [
+					{
+						data: {},
+						template: 'template/index.html',
+						dest: 'static/index.html',
+					},
+				],
 			},
 		},
 		nodemon: {
@@ -74,9 +98,10 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-concurrent');
 	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-mustache-render');
 	grunt.loadNpmTasks('grunt-nodemon');
 
-	grunt.registerTask('default', ['less:dist']);
+	grunt.registerTask('default', ['less:dist', 'mustache_render:dist']);
 	grunt.registerTask('dev', ['concurrent:dev']);
 
 };

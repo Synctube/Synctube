@@ -2,13 +2,13 @@
  * Module dependencies.
  */
 
-var asyncevent = require('./asyncevent.js');
+var asyncevent = require('../lib/asyncevent.js');
 var metadata = require('./metadata.js');
-var PlaylistRunner = require('./playlistrunner.js');
-var rooms = require('./rooms.js');
+var PlaylistRunner = require('../lib/playlistrunner.js');
+var rooms = require('../lib/rooms.js');
 var safesocket = require('safesocket');
 var sockets = require('./sockets.js');
-var Video = require('./video.js');
+var Video = require('../lib/video.js');
 
 /**
  * Augment rooms with PlaylistRunner.

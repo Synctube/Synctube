@@ -25,4 +25,5 @@ bower_components
 # Generated files
 
 static/index.html
+static/room.js
 static/style.css*

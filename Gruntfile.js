@@ -6,6 +6,19 @@ module.exports = function (grunt) {
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
+		browserify: {
+			options: {
+				alias: ['socket.io/node_modules/socket.io-client:socket.io-client'],
+			},
+			dev: {
+				files: {
+					'static/room.js': ['client/sync.js'],
+				},
+				options: {
+					debug: true,
+				},
+			},
+		},
 		less: {
 			options: {
 				paths: [
@@ -31,6 +44,17 @@ module.exports = function (grunt) {
 			},
 		},
 		watch: {
+			browserify: {
+				files: [
+					'client/**/*.js',
+					'lib/*.js',
+				],
+				tasks: ['browserify:dev'],
+				options: {
+					atBegin: true,
+					interrupt: true,
+				},
+			},
 			less: {
 				files: ['less/**/*.less'],
 				tasks: ['less:dev'],
@@ -80,6 +104,7 @@ module.exports = function (grunt) {
 					ignored: [
 						'Gruntfile.js',
 						'node_modules/**',
+						'client/**',
 					],
 					watchedExtensions: ['js'],
 				},
@@ -95,6 +120,7 @@ module.exports = function (grunt) {
 		},
 	});
 
+	grunt.loadNpmTasks('grunt-browserify');
 	grunt.loadNpmTasks('grunt-concurrent');
 	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-contrib-watch');

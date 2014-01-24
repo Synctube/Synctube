@@ -58,7 +58,7 @@ sockets.on('listen', function (io) {
 
 	io.sockets.on('connection', function (socket) {
 
-		var name = socket.handshake.query.room;
+		var name = unescape(socket.handshake.query.room);
 
 		socket.join(name);
 

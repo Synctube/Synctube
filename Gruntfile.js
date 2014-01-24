@@ -18,6 +18,23 @@ module.exports = function (grunt) {
 					debug: true,
 				},
 			},
+			dist: {
+				files: {
+					'build/room.js': ['client/sync.js'],
+				},
+			},
+		},
+		uglify: {
+			dist: {
+				options: {
+					report: 'min',
+					preserveComments: 'some',
+					banner: '/*! Copyright (c) Henry Merriam 2014. All Rights Reserved. */\n',
+				},
+				files: {
+					'static/room.js': ['build/room.js'],
+				},
+			},
 		},
 		less: {
 			options: {
@@ -104,6 +121,7 @@ module.exports = function (grunt) {
 					ignored: [
 						'Gruntfile.js',
 						'node_modules/**',
+						'build/**',
 						'client/**',
 					],
 					watchedExtensions: ['js'],
@@ -123,11 +141,12 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-browserify');
 	grunt.loadNpmTasks('grunt-concurrent');
 	grunt.loadNpmTasks('grunt-contrib-less');
+	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-mustache-render');
 	grunt.loadNpmTasks('grunt-nodemon');
 
-	grunt.registerTask('default', ['less:dist', 'mustache_render:dist']);
+	grunt.registerTask('default', ['less:dist', 'mustache_render:dist', 'browserify:dist', 'uglify:dist']);
 	grunt.registerTask('dev', ['concurrent:dev']);
 
 };

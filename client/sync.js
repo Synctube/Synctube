@@ -3,7 +3,6 @@
  */
 
 var player = require('./player.js');
-var io = require('socket.io-client');
 var Video = require('../lib/Video.js');
 var VideoState = require('../lib/VideoState.js');
 

@@ -8,7 +8,7 @@ module.exports = function (grunt) {
 		pkg: grunt.file.readJSON('package.json'),
 		browserify: {
 			options: {
-				alias: ['socket.io/node_modules/socket.io-client:socket.io-client'],
+				ignore: ['socket.io-client'],
 			},
 			dev: {
 				files: {

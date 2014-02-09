@@ -3,6 +3,7 @@
  */
 
 var player = require('./player.js');
+var MutableList = require('../lib/MutableList.js');
 var Video = require('../lib/Video.js');
 var VideoState = require('../lib/VideoState.js');
 
@@ -30,6 +31,24 @@ socket.on('state', function (state) {
 	local.video = state.video ? new Video(state.video.id, state.video.length) : null;
 	local.playing = state.playing;
 	local.time = state.time;
+});
+
+/**
+ * Synchronize local playlist with the remote.
+ */
+
+var playlist = new MutableList();
+
+socket.on('playlist', function (entries) {
+	playlist = MutableList.fromArray(entries);
+});
+
+socket.on('insert', function (entry, before) {
+	playlist.insert(new MutableList.Entry(entry.value, entry.id), playlist.find(before));
+});
+
+socket.on('remove', function (entry) {
+	playlist.remove(playlist.find(entry));
 });
 
 /**

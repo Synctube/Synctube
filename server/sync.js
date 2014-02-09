@@ -40,7 +40,7 @@ sockets.on('listen', function (io) {
 		var runner = room.runner;
 
 		runner.playlist.on('insert', function (entry, before) {
-			io.sockets.in(room.name).emit('insert', entry, before != runner.playlist ? before : null);
+			io.sockets.in(room.name).emit('insert', entry, before);
 		});
 
 		runner.playlist.on('remove', function (entry) {

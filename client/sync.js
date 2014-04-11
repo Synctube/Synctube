@@ -58,11 +58,11 @@ socket.on('remove', function (entry) {
 player.on('ready', function () {
 
 	local.on('play', function () {
-		player.play()
+		player.play();
 	});
 
 	local.on('pause', function () {
-		player.pause()
+		player.pause();
 	});
 
 	local.on('change', function () {
@@ -98,7 +98,7 @@ player.on('ready', function () {
 	function syncPlaying () {
 		if (player.isPlaying() !== local.playing) {
 			if (local.playing) {
-				player.play()
+				player.play();
 			} else {
 				player.pause();
 			}

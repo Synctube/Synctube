@@ -21,7 +21,7 @@ window.onYouTubeIframeAPIReady = function () {
 			'onStateChange': onPlayerStateChange,
 		},
 	});
-}
+};
 
 function onPlayerReady (event) {
 	exports.emit('ready');

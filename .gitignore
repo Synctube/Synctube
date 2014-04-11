@@ -18,6 +18,12 @@ build
 
 node_modules
 
+# VS2013 files
+
+.gitattributes
+*.suo
+*.njsproj
+
 # Build tools
 
 bower_components

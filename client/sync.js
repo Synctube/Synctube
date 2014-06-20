@@ -4,7 +4,6 @@
 
 var player = require('./player.js');
 var MutableList = require('../lib/MutableList.js');
-var Video = require('../lib/Video.js');
 var VideoState = require('../lib/VideoState.js');
 
 /**
@@ -28,7 +27,7 @@ var local = new VideoState();
  */
 
 socket.on('state', function (state) {
-	local.video = state.video ? new Video(state.video.id, state.video.length) : null;
+	local.video = state.video;
 	local.playing = state.playing;
 	local.time = state.time;
 });

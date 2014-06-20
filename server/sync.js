@@ -8,7 +8,6 @@ var PlaylistRunner = require('../lib/playlistrunner.js');
 var rooms = require('../lib/rooms.js');
 var safesocket = require('safesocket');
 var sockets = require('./sockets.js');
-var Video = require('../lib/video.js');
 
 /**
  * Augment rooms with PlaylistRunner.
@@ -70,11 +69,9 @@ sockets.on('listen', function (io) {
 		});
 
 		socket.on('add', safesocket(1, function (id, callback) {
-			if (!Video.validId.test(id)) { callback(null); return; }
-			var video = new Video(id);
-			metadata.load(video, function (err) {
-				if (err) { callback(null); return; }
-				callback(runner.playlist.push(video));
+			metadata.fetch(id, function (err, video) {
+				if (err) { return callback(err); }
+				callback(null, runner.playlist.push(video));
 			});
 		}));
 

@@ -4,6 +4,8 @@ module.exports = function (grunt) {
 		'static/style.css': 'less/main.less',
 	};
 
+	var roomFiles = ['client/sync.js'];
+
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 		browserify: {
@@ -12,7 +14,7 @@ module.exports = function (grunt) {
 			},
 			dev: {
 				files: {
-					'static/room.js': ['client/sync.js'],
+					'static/room.js': roomFiles,
 				},
 				options: {
 					debug: true,
@@ -20,7 +22,7 @@ module.exports = function (grunt) {
 			},
 			dist: {
 				files: {
-					'build/room.js': ['client/sync.js'],
+					'build/room.js': roomFiles,
 				},
 			},
 		},

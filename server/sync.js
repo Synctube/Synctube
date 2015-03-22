@@ -3,7 +3,7 @@
  */
 
 var asyncevent = require('../lib/asyncevent.js');
-var metadata = require('./metadata.js');
+var youtube = require('../lib/youtube.js');
 var PlaylistRunner = require('../lib/playlistrunner.js');
 var rooms = require('../lib/rooms.js');
 var safesocket = require('safesocket');
@@ -69,7 +69,7 @@ sockets.on('listen', function (io) {
 		});
 
 		socket.on('add', safesocket(1, function (id, callback) {
-			metadata.fetch(id, function (err, video) {
+			youtube.getVideoData(id, function (err, video) {
 				if (err) { return callback(err); }
 				callback(null, runner.playlist.push(video));
 			});

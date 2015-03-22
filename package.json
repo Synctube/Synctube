@@ -4,6 +4,8 @@
     "description": "Realtime web video synchronization.",
     "author": "Henry Merriam <henry@zephyrhosting.net>",
     "dependencies": {
+        "moment": "^2.5.1",
+        "moment-interval": "^0.2.1",
         "mu2": "^0.5.20",
         "request": "^2.53.0",
         "safesocket": "^1.0.0",

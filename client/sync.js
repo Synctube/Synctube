@@ -2,6 +2,7 @@
  * Module dependencies.
  */
 
+var io = require('socket.io-client');
 var player = require('./player.js');
 var MutableList = require('../lib/MutableList.js');
 var VideoState = require('../lib/VideoState.js');
@@ -10,11 +11,7 @@ var VideoState = require('../lib/VideoState.js');
  * Establish socket connection.
  */
 
-var roomName = window.location.pathname.split('/')[2];
-
-var socket = io.connect(null, {
-	query: $.param({ room: roomName }),
-});
+var socket = io();
 
 /**
  * Maintain a local video state.

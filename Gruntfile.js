@@ -9,9 +9,6 @@ module.exports = function (grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 		browserify: {
-			options: {
-				ignore: ['socket.io-client'],
-			},
 			dev: {
 				files: {
 					'static/room.js': roomFiles,

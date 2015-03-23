@@ -8,6 +8,7 @@ var PlaylistRunner = require('../lib/playlistrunner.js');
 var rooms = require('../lib/rooms.js');
 var safesocket = require('safesocket');
 var sockets = require('./sockets.js');
+var url = require('url');
 
 /**
  * Augment rooms with PlaylistRunner.
@@ -57,7 +58,7 @@ sockets.on('listen', function (io) {
 
 	io.sockets.on('connection', function (socket) {
 
-		var name = unescape(socket.handshake.query.room);
+		var name = unescape(url.parse(socket.handshake.headers.referer).pathname.split('/')[2]);
 
 		socket.join(name);
 

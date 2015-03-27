@@ -39,6 +39,10 @@ socket.on('playlist', function (entries) {
 	playlist = MutableList.fromArray(entries);
 });
 
+socket.on('clear', function () {
+	playlist.clear();
+});
+
 socket.on('insert', function (entry, before) {
 	playlist.insert(new MutableList.Entry(entry.value, entry.id), playlist.find(before));
 });

@@ -39,6 +39,10 @@ sockets.on('listen', function (io) {
 	rooms.on('create', function (room) {
 		var runner = room.runner;
 
+		runner.playlist.on('clear', function () {
+			io.sockets.in(room.name).emit('clear');
+		});
+
 		runner.playlist.on('insert', function (entry, before) {
 			io.sockets.in(room.name).emit('insert', entry, before != null ? before.id : null);
 		});
@@ -72,6 +76,11 @@ sockets.on('listen', function (io) {
 		socket.on('disconnect', function () {
 			room.remove(socket);
 		});
+
+		socket.on('clear', safesocket(0, function (callback) {
+			runner.playlist.clear();
+			callback();
+		}));
 
 		socket.on('add', safesocket(1, function (id, callback) {
 			youtube.getVideoData(id, function (err, video) {

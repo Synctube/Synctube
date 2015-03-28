@@ -97,13 +97,13 @@ sockets.on('listen', function (io) {
 			callback(entry);
 		}));
 
-		socket.on('move', safesocket(3, function (id, forward, skips, callback) {
-			if (!(skips instanceof Array)) { callback(null); return; }
+		socket.on('move', safesocket(2, function (id, beforeId, callback) {
 			var entry = runner.playlist.find(id);
+			var before = runner.playlist.find(beforeId) || runner.playlist;
 			if (entry) {
-				runner.playlist.skipmove(entry, forward, skips);
+				runner.playlist.move(entry, before);
 			}
-			callback(entry);
+			callback(entry, before);
 		}));
 
 		socket.on('cue', safesocket(1, function (id, callback) {

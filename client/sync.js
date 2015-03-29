@@ -36,23 +36,26 @@ socket.on('state', function (state) {
 var playlist = new MutableList();
 
 socket.on('playlist', function (entries) {
-	playlist = MutableList.fromArray(entries);
+	playlist.clear();
+	entries.forEach(function (entry) {
+		playlist.put(entry.key, entry.value);
+	});
 });
 
 socket.on('clear', function () {
 	playlist.clear();
 });
 
-socket.on('insert', function (entry, before) {
-	playlist.insert(new MutableList.Entry(entry.value, entry.id), playlist.find(before));
+socket.on('put', function (key, value) {
+	playlist.put(key, value);
 });
 
-socket.on('move', function (entry, before) {
-	playlist.move(playlist.find(entry.id), playlist.find(before));
+socket.on('move', function (key, before) {
+	playlist.move(key, before);
 });
 
-socket.on('remove', function (entry) {
-	playlist.remove(playlist.find(entry));
+socket.on('remove', function (key) {
+	playlist.remove(key);
 });
 
 /**

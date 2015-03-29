@@ -43,16 +43,16 @@ sockets.on('listen', function (io) {
 			io.sockets.in(room.name).emit('clear');
 		});
 
-		runner.playlist.on('insert', function (entry, before) {
-			io.sockets.in(room.name).emit('insert', entry, before != null ? before.id : null);
+		runner.playlist.on('put', function (key, value) {
+			io.sockets.in(room.name).emit('put', key, value);
 		});
 
-		runner.playlist.on('move', function (entry, before) {
-			io.sockets.in(room.name).emit('move', entry, before != null ? before.id : null);
+		runner.playlist.on('move', function (key, before) {
+			io.sockets.in(room.name).emit('move', key, before);
 		});
 
-		runner.playlist.on('remove', function (entry) {
-			io.sockets.in(room.name).emit('remove', entry.id);
+		runner.playlist.on('remove', function (key) {
+			io.sockets.in(room.name).emit('remove', key);
 		});
 
 		var changed = asyncevent(function () {
@@ -89,32 +89,25 @@ sockets.on('listen', function (io) {
 			});
 		}));
 
-		socket.on('delete', safesocket(1, function (id, callback) {
-			var entry = runner.playlist.find(id);
-			if (entry) {
-				runner.playlist.remove(entry);
-			}
-			callback(entry);
+		socket.on('delete', safesocket(1, function (key, callback) {
+			var removed = runner.playlist.remove(key);
+			callback(removed);
 		}));
 
-		socket.on('move', safesocket(2, function (id, beforeId, callback) {
-			var entry = runner.playlist.find(id);
-			var before = runner.playlist.find(beforeId) || runner.playlist;
-			if (entry) {
-				runner.playlist.move(entry, before);
-			}
-			callback(entry, before);
+		socket.on('move', safesocket(2, function (key, beforeKey, callback) {
+			var success = runner.playlist.move(key, beforeKey);
+			callback(success);
 		}));
 
-		socket.on('cue', safesocket(1, function (id, callback) {
-			var entry = runner.playlist.find(id);
+		socket.on('cue', safesocket(1, function (key, callback) {
+			var entry = runner.playlist.getNode(key)
 			if (entry) {
 				runner.cueVideo(entry);
 			}
 			callback(entry);
 		}));
 
-		socket.emit('playlist', runner.playlist.toArray());
+		socket.emit('playlist', runner.playlist.getNodes());
 		sendState(socket, runner);
 	});
 

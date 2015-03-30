@@ -4,7 +4,7 @@
 
 var io = require('socket.io-client');
 var player = require('./player.js');
-var MutableList = require('../lib/MutableList.js');
+var LinkedMap = require('../lib/linkedmap.js');
 var VideoState = require('../lib/VideoState.js');
 
 /**
@@ -33,7 +33,7 @@ socket.on('state', function (state) {
  * Synchronize local playlist with the remote.
  */
 
-var playlist = new MutableList();
+var playlist = new LinkedMap();
 
 socket.on('playlist', function (entries) {
 	playlist.clear();

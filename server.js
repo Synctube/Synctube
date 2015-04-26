@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var mu = require('mu2');
 
+var config = require('./config.json');
 var sockets = require('./server/sockets.js');
 var rooms = require('./lib/rooms.js');
 
@@ -42,5 +43,5 @@ app.get('/rooms/:name', function (req, res) {
 
 app.use(express.static(__dirname + '/static'));
 
-var server = app.listen(3000);
+var server = app.listen(config.listen.port);
 sockets.listen(server);

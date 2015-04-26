@@ -5,7 +5,7 @@
 var io = require('socket.io-client');
 var player = require('./player.js');
 var LinkedMap = require('../lib/linkedmap.js');
-var VideoState = require('../lib/VideoState.js');
+var VideoState = require('../lib/videostate.js');
 
 /**
  * Establish socket connection.

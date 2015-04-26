@@ -4,5 +4,29 @@
   <div id="player-wrapper">
     <div id="player"></div>
   </div>
+  <div data-bind="with: playlist">
+    <div>
+      <form data-bind="submit: seek">
+        <input data-bind="value: seekTime" placeholder="hh:mm:ss"></input>
+        <button type="submit">Seek</button>
+      </form>
+      <button data-bind="click: playpause, text: playing() ? 'Pause' : 'Play'"></button>
+    </div>
+    <form data-bind="submit: add">
+      <input data-bind="value: link, valueUpdate: 'afterkeydown'" placeholder="Paste a YouTube URL"></input>
+      <button type="submit" data-bind="enable: valid">Add</button>
+    </form>
+    <ul data-bind="foreach: entries">
+      <li>
+        <div>
+          <img data-bind="attr: { src: thumbnail }" />
+          <span data-bind="text: title() || 'Loading...'" style="font-weight: bold"></span>
+          (<span data-bind="text: length"></span>)
+          <button data-bind="click: play">Play</button>
+          <button data-bind="click: remove">Remove</button>
+        </div>
+      </li>
+    </ul>
+  </div>
 </div>
 {{> footer.html}}

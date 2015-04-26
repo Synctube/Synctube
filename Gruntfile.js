@@ -4,7 +4,7 @@ module.exports = function (grunt) {
 		'static/style.css': 'less/main.less',
 	};
 
-	var roomFiles = ['client/sync.js'];
+	var roomFiles = ['client/room.js'];
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),

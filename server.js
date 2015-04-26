@@ -16,7 +16,7 @@ function render(res, file, data) {
 	mu.compileAndRender(file, data).pipe(res);
 }
 
-app.get('/rooms', function (req, res) {
+app.get('/', function (req, res) {
 	var data = {
 		rooms: rooms.toArray().map(function (room) {
 			return {
@@ -30,7 +30,7 @@ app.get('/rooms', function (req, res) {
 			res.json(data);
 		},
 		html: function (req, res) {
-			render(res, 'rooms.html', data);
+			render(res, 'index.html', data);
 		},
 	});
 });

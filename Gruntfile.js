@@ -97,22 +97,6 @@ module.exports = function (grunt) {
 				},
 			},
 		},
-		mustache_render: {
-			options: {
-				clear_cache: true,
-				directory: 'template/',
-				extension: '',
-			},
-			dist: {
-				files: [
-					{
-						data: {},
-						template: 'template/index.html',
-						dest: 'static/index.html',
-					},
-				],
-			},
-		},
 		nodemon: {
 			dev: {
 				script: 'server.js',
@@ -142,10 +126,9 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks('grunt-mustache-render');
 	grunt.loadNpmTasks('grunt-nodemon');
 
-	grunt.registerTask('default', ['less:dist', 'mustache_render:dist', 'browserify:dist', 'uglify:dist']);
+	grunt.registerTask('default', ['less:dist', 'browserify:dist', 'uglify:dist']);
 	grunt.registerTask('dev', ['concurrent:dev']);
 
 };

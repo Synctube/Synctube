@@ -5,4 +5,22 @@
     <p>Synchronize videos across the web with Synctube. Join a room or create your own to get started.</p>
   </div>
 </div>
+<div class="container">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Room Name</th>
+        <th>Connected Users</th>
+      </tr>
+    </thead>
+    <tbody>
+    {{#rooms}}
+      <tr>
+        <td><a href="/rooms/{{name}}">{{name}}</a></td>
+        <td>{{connected}}</td>
+      </tr>
+    {{/rooms}}
+    </tbody>
+  </table>
+</div>
 {{> footer.html}}

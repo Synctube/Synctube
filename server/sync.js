@@ -108,6 +108,16 @@ sockets.on('listen', function (io) {
 			callback(entry);
 		}));
 
+		socket.on('seek', safesocket(1, function (time, callback) {
+			runner.state.time = time;
+			callback();
+		}));
+
+		socket.on('playpause', safesocket(0, function (callback) {
+			runner.state.playing = !runner.state.playing;
+			callback();
+		}));
+
 		socket.emit('playlist', runner.playlist.getNodes());
 		sendState(socket, runner);
 	});

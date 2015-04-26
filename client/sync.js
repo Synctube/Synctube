@@ -137,4 +137,10 @@ player.on('ready', function () {
 	add: function (id) {
 		socket.emit('add', id);
 	},
+	seek: function (time) {
+		socket.emit('seek', time);
+	},
+	playpause: function () {
+		socket.emit('playpause');
+	},
  };

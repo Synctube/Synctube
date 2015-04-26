@@ -83,8 +83,9 @@ sockets.on('listen', function (io) {
 		}));
 
 		socket.on('add', safesocket(1, function (id, callback) {
-			youtube.getVideoData(id, function (err, video) {
+			youtube.getVideoLength(id, function (err, length) {
 				if (err) { return callback(err); }
+				var video = { id: id, length: length };
 				callback(null, runner.playlist.push(video));
 			});
 		}));

@@ -5,6 +5,7 @@ module.exports = function (grunt) {
 	};
 
 	var roomFiles = ['client/room.js'];
+	var roomsFiles = ['client/rooms.js'];
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
@@ -12,6 +13,7 @@ module.exports = function (grunt) {
 			dev: {
 				files: {
 					'static/room.js': roomFiles,
+					'static/rooms.js': roomsFiles,
 				},
 				options: {
 					debug: true,
@@ -20,6 +22,7 @@ module.exports = function (grunt) {
 			dist: {
 				files: {
 					'build/room.js': roomFiles,
+					'build/rooms.js': roomsFiles,
 				},
 			},
 		},
@@ -32,6 +35,7 @@ module.exports = function (grunt) {
 				},
 				files: {
 					'static/room.js': ['build/room.js'],
+					'static/rooms.js': ['build/rooms.js'],
 				},
 			},
 		},

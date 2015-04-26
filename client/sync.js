@@ -120,3 +120,21 @@ player.on('ready', function () {
 	}
 
 });
+
+/**
+ * Module exports.
+ */
+
+ var sync = module.exports = exports = {
+ 	playlist: playlist,
+ 	state: local,
+ 	cue: function (key) {
+		socket.emit('cue', key);
+	},
+	remove: function (key) {
+		socket.emit('delete', key);
+	},
+	add: function (id) {
+		socket.emit('add', id);
+	},
+ };

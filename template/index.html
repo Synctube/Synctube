@@ -20,6 +20,11 @@
         <td>{{connected}}</td>
       </tr>
     {{/rooms}}
+    {{^rooms}}
+      <tr>
+        <td colspan="2" class="text-center text-muted">There are no rooms right now. Create your own!</td>
+      </tr>
+    {{/rooms}}
     </tbody>
   </table>
 </div>

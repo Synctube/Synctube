@@ -13,7 +13,10 @@ var rooms = module.exports = exports = new (function () {
 	var self = this;
 	self.name = ko.observable('');
 	self.create = function () {
-		window.location.pathname = '/rooms/' + encodeURI(self.name());
+		var name = encodeURI(self.name());
+		if (name) {
+			window.location.pathname = '/rooms/' + name;
+		}
 	};
 })();
 

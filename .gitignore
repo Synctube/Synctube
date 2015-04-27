@@ -33,4 +33,10 @@ bower_components
 static/index.html
 static/room.js
 static/rooms.js
+static/room.js.map
+static/rooms.js.map
+static/room.min.js
+static/rooms.min.js
+static/room.min.js.map
+static/rooms.min.js.map
 static/style.css*

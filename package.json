@@ -36,6 +36,7 @@
         ]
     },
     "browserify-shim": {
+        "jquery": "global:$",
         "knockout": "global:ko",
         "socket.io-client": "global:io"
     },

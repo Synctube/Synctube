@@ -42,7 +42,7 @@
     },
     "scripts": {
         "build": "npm run build:css && npm run build:js && npm run build:min",
-        "build:css": "lessc --include-path=less;bower_components --clean-css less/main.less static/style.css",
+        "build:css": "lessc --include-path=\"less:bower_components\" --clean-css less/main.less static/style.css",
         "build:js": "browserify client/main.js --debug | exorcist static/main.js.map > static/main.js",
         "build:min": "uglifyjs static/main.js -m -c --source-map static/main.min.js.map --in-source-map static/main.js.map --source-map-url main.min.js.map > static/main.min.js",
         "postinstall": "bower install"

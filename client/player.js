@@ -10,71 +10,75 @@ var events = require('events');
 
 module.exports = exports = function () {
 
-/**
- * YouTube player.
- */
+	/**
+	 * YouTube player.
+	 */
 
-var tag = document.createElement('script');
-tag.src = '//www.youtube.com/iframe_api';
-var firstScriptTag = document.getElementsByTagName('script')[0];
-firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+	var tag = document.createElement('script');
+	tag.src = '//www.youtube.com/iframe_api';
+	var firstScriptTag = document.getElementsByTagName('script')[0];
+	firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-var youtube;
-window.onYouTubeIframeAPIReady = function () {
-	youtube = new YT.Player('player', {
-		events: {
-			'onReady': onPlayerReady,
-			'onStateChange': onPlayerStateChange,
+	var youtube;
+	window.onYouTubeIframeAPIReady = function () {
+		youtube = new YT.Player('player', {
+			events: {
+				'onReady': onPlayerReady,
+				'onStateChange': onPlayerStateChange,
+			},
+		});
+	};
+
+	function onPlayerReady (event) {
+		player.emit('ready');
+	}
+
+	function onPlayerStateChange (event) {
+		player.emit('change');
+	}
+
+	/**
+	 * Player module interface.
+	 */
+
+	var player = {
+		play: function () {
+			youtube.playVideo();
 		},
-	});
-};
+		pause: function () {
+			youtube.pauseVideo();
+		},
+		seek: function (time) {
+			youtube.seekTo(time + (this.isPlaying() ? 0.5 : 0), true);
+		},
+		load: function (video, time) {
+			youtube.loadVideoById(video.id, time);
+		},
+		getVideo: function () {
+			return youtube.getVideoData().video_id;
+		},
+		getTime: function () {
+			return youtube.getCurrentTime();
+		},
+		isPlaying: function () {
+			return youtube.getPlayerState() === YT.PlayerState.PLAYING;
+		},
+		isEnded: function () {
+			return youtube.getPlayerState() === YT.PlayerState.ENDED;
+		},
+	};
 
-function onPlayerReady (event) {
-	player.emit('ready');
-}
+	/**
+	 * Extend EventEmitter.
+	 */
 
-function onPlayerStateChange (event) {
-	player.emit('change');
-}
+	player.__proto__ = events.EventEmitter.prototype;
+	events.EventEmitter.call(player);
 
-/**
- * Player module interface.
- */
+	/**
+	 * Return module interface.
+	 */
 
-var player = {
-	play: function () {
-		youtube.playVideo();
-	},
-	pause: function () {
-		youtube.pauseVideo();
-	},
-	seek: function (time) {
-		youtube.seekTo(time + (this.isPlaying() ? 0.5 : 0), true);
-	},
-	load: function (video, time) {
-		youtube.loadVideoById(video.id, time);
-	},
-	getVideo: function () {
-		return youtube.getVideoData().video_id;
-	},
-	getTime: function () {
-		return youtube.getCurrentTime();
-	},
-	isPlaying: function () {
-		return youtube.getPlayerState() === YT.PlayerState.PLAYING;
-	},
-	isEnded: function () {
-		return youtube.getPlayerState() === YT.PlayerState.ENDED;
-	},
-};
-
-/**
- * Extend EventEmitter.
- */
-
-player.__proto__ = events.EventEmitter.prototype;
-events.EventEmitter.call(player);
-
-return player;
+	return player;
 
 };

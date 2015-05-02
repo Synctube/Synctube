@@ -25,6 +25,8 @@
         "less": "^2.5.0",
         "less-plugin-clean-css": "^1.5.0",
         "uglify-js": "^2.4.20",
+        "parallelshell": "^1.1.1",
+        "watch": "^0.16.0",
         "grunt-concurrent": "^0.4.3",
         "grunt-contrib-watch": "^0.4.4",
         "grunt-cli": "^0.1.13",
@@ -49,6 +51,9 @@
         "build:css": "lessc --include-path=\"less:bower_components\" --clean-css less/main.less static/style.css",
         "build:js": "browserify client/main.js --debug | exorcist static/main.js.map > static/main.js",
         "build:min": "uglifyjs static/main.js -m -c --source-map static/main.min.js.map --in-source-map static/main.js.map --source-map-url main.min.js.map > static/main.min.js",
+        "watch": "parallelshell \"npm run watch:css\" \"npm run watch:js\"",
+        "watch:css": "watch \"npm run build:css\" less/",
+        "watch:js": "watch \"npm run build:js && npm run build:min\" lib/ client/",
         "postinstall": "bower install"
     },
     "engines": { "node": "0.10.x" },

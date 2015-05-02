@@ -8,6 +8,12 @@ var LinkedMap = require('../lib/linkedmap.js');
 var VideoState = require('../lib/videostate.js');
 
 /**
+ * Module exports.
+ */
+
+module.exports = exports = function () {
+
+/**
  * Establish socket connection.
  */
 
@@ -57,6 +63,12 @@ socket.on('move', function (key, before) {
 socket.on('remove', function (key) {
 	playlist.remove(key);
 });
+
+/**
+ * Instantiate player module.
+ */
+
+player = player();
 
 /**
  * Synchronize player with local video state.
@@ -122,10 +134,10 @@ player.on('ready', function () {
 });
 
 /**
- * Module exports.
+ * Sync module interface.
  */
 
- var sync = module.exports = exports = {
+return {
  	playlist: playlist,
  	state: local,
  	cue: function (key) {
@@ -144,3 +156,5 @@ player.on('ready', function () {
 		socket.emit('playpause');
 	},
  };
+
+};

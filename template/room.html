@@ -1,11 +1,9 @@
 {{> header.html}}
-<script src="//cdn.socket.io/socket.io-1.3.5.js"></script>
-<script src="/room.min.js"></script>
 <div class="container">
   <div id="player-wrapper">
     <div id="player"></div>
   </div>
-  <div data-bind="with: playlist">
+  <div data-bind="with: playlist()">
     <div>
       <form data-bind="submit: seek">
         <input data-bind="value: seekTime" placeholder="hh:mm:ss"></input>

@@ -12,6 +12,18 @@ var youtube = require('../lib/youtube.js');
 require('moment-duration-format');
 
 /**
+ * Module exports.
+ */
+
+module.exports = exports = function () {
+
+/**
+ * Instantiate sync module.
+ */
+
+sync = sync();
+
+/**
  * ViewModel for an individual playlist entry.
  */
 
@@ -72,10 +84,10 @@ entries.on('move', updatePlaylist);
 entries.on('remove', updatePlaylist);
 
 /**
- * Module exports.
+ * Playlist view model.
  */
 
-var playlist = module.exports = exports = new (function () {
+var playlist = new (function () {
 	var self = this;
 	self.entries = ko.observableArray();
 	self.link = ko.observable('');
@@ -103,3 +115,7 @@ var playlist = module.exports = exports = new (function () {
 		self.playing(sync.state.playing);
 	});
 })();
+
+return playlist;
+
+};

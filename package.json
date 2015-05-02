@@ -41,14 +41,10 @@
         "socket.io-client": "global:io"
     },
     "scripts": {
-        "build": "npm run build:css && npm run build:room && npm run build:rooms",
+        "build": "npm run build:css && npm run build:js && npm run build:min",
         "build:css": "lessc --include-path=less;bower_components --clean-css less/main.less static/style.css",
-        "build:room": "npm run build:room:js && npm run build:room:min",
-        "build:room:js": "browserify client/room.js --debug | exorcist static/room.js.map > static/room.js",
-        "build:room:min": "uglifyjs static/room.js -m -c --source-map static/room.min.js.map --in-source-map static/room.js.map --source-map-url room.min.js.map > static/room.min.js",
-        "build:rooms": "npm run build:rooms:js && npm run build:rooms:min",
-        "build:rooms:js": "browserify client/rooms.js --debug | exorcist static/rooms.js.map > static/rooms.js",
-        "build:rooms:min": "uglifyjs static/rooms.js -m -c --source-map static/rooms.min.js.map --in-source-map static/rooms.js.map --source-map-url rooms.min.js.map > static/rooms.min.js",
+        "build:js": "browserify client/main.js --debug | exorcist static/main.js.map > static/main.js",
+        "build:min": "uglifyjs static/main.js -m -c --source-map static/main.min.js.map --in-source-map static/main.js.map --source-map-url main.min.js.map > static/main.min.js",
         "postinstall": "bower install"
     },
     "engines": { "node": "0.10.x" },

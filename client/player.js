@@ -5,6 +5,12 @@
 var events = require('events');
 
 /**
+ * Module exports.
+ */
+
+module.exports = exports = function () {
+
+/**
  * YouTube player.
  */
 
@@ -24,18 +30,18 @@ window.onYouTubeIframeAPIReady = function () {
 };
 
 function onPlayerReady (event) {
-	exports.emit('ready');
+	player.emit('ready');
 }
 
 function onPlayerStateChange (event) {
-	exports.emit('change');
+	player.emit('change');
 }
 
 /**
- * Module exports.
+ * Player module interface.
  */
 
-var player = module.exports = exports = {
+var player = {
 	play: function () {
 		youtube.playVideo();
 	},
@@ -68,3 +74,7 @@ var player = module.exports = exports = {
 
 player.__proto__ = events.EventEmitter.prototype;
 events.EventEmitter.call(player);
+
+return player;
+
+};

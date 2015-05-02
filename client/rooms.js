@@ -2,7 +2,6 @@
  * Module dependencies.
  */
 
-var domready = require('domready');
 var ko = require('knockout');
 
 /**
@@ -19,7 +18,3 @@ var rooms = module.exports = exports = new (function () {
 		}
 	};
 })();
-
-domready(function () {
-	ko.applyBindings(rooms);
-});

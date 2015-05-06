@@ -6,6 +6,8 @@ var config = require('./config.json');
 var sockets = require('./server/sockets.js');
 var rooms = require('./lib/rooms.js');
 
+var clientVersion = require('socket.io/node_modules/socket.io-client/package').version;
+
 require('./server/sync.js');
 
 mu.root = __dirname + '/template';
@@ -25,6 +27,7 @@ app.get('/', function (req, res) {
 				connected: Object.keys(room.connected).length,
 			};
 		}),
+		socketioClientVersion: clientVersion,
 	};
 	res.format({
 		json: function (req, res) {
@@ -38,7 +41,9 @@ app.get('/', function (req, res) {
 
 app.get('/rooms/:name', function (req, res) {
 	res.writeHead(200, { 'Content-Type': 'text/html; charset=utf8' });
-	render(res, 'room.html', {});
+	render(res, 'room.html', {
+		socketioClientVersion: clientVersion,
+	});
 });
 
 app.use(express.static(__dirname + '/static'));

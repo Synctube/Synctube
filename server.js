@@ -2,13 +2,13 @@ var express = require('express');
 var app = express();
 var mu = require('mu2');
 
-var config = require('./config.json');
-var sockets = require('./server/sockets.js');
-var rooms = require('./lib/rooms.js');
+var config = require('./config');
+var sockets = require('./server/sockets');
+var rooms = require('./lib/rooms');
 
 var clientVersion = require('socket.io/node_modules/socket.io-client/package').version;
 
-require('./server/sync.js');
+require('./server/sync');
 
 mu.root = __dirname + '/template';
 

@@ -2,12 +2,12 @@
  * Module dependencies.
  */
 
-var asyncevent = require('../lib/asyncevent.js');
-var youtube = require('../lib/youtube.js');
-var PlaylistRunner = require('../lib/playlistrunner.js');
-var rooms = require('../lib/rooms.js');
+var asyncevent = require('../lib/asyncevent');
+var youtube = require('../lib/youtube');
+var PlaylistRunner = require('../lib/playlistrunner');
+var rooms = require('../lib/rooms');
 var safesocket = require('safesocket');
-var sockets = require('./sockets.js');
+var sockets = require('./sockets');
 var url = require('url');
 
 /**

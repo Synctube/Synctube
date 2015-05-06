@@ -4,10 +4,10 @@
 
 var ko = require('knockout');
 var moment = require('moment');
-var sync = require('./sync.js');
+var sync = require('./sync');
 var request = require('request');
-var config = require('../config.json');
-var youtube = require('../lib/youtube.js');
+var config = require('../config');
+var youtube = require('../lib/youtube');
 
 require('moment-duration-format');
 

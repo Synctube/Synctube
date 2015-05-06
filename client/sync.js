@@ -3,9 +3,9 @@
  */
 
 var io = require('socket.io-client');
-var player = require('./player.js');
-var LinkedMap = require('../lib/linkedmap.js');
-var VideoState = require('../lib/videostate.js');
+var player = require('./player');
+var LinkedMap = require('../lib/linkedmap');
+var VideoState = require('../lib/videostate');
 
 /**
  * Module exports.

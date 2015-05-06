@@ -66,7 +66,7 @@ sockets.on('listen', function (io) {
 
 	io.sockets.on('connection', function (socket) {
 
-		var name = unescape(url.parse(socket.handshake.headers.referer).pathname.split('/')[2]);
+		var name = unescape(url.parse(socket.handshake.headers.referer || '').pathname.split('/')[2]);
 
 		socket.join(name);
 

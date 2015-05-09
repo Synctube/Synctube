@@ -10,41 +10,57 @@
       <form class="form-horizontal" data-bind="submit: add">
         <div class="form-group form-group-sm">
           <label class="sr-only" for="link">
-            Add video link
+            Search or add video link
           </label>
           <div class="input-group">
-            <input id="link" class="form-control" type="url" data-bind="value: link, valueUpdate: 'afterkeydown'" placeholder="Paste a YouTube URL"></input>
+            <input id="link" class="form-control" type="text" data-bind="value: link" placeholder="Search or paste a YouTube URL"></input>
             <span class="input-group-btn">
-              <button class="btn btn-default btn-sm" type="submit" data-bind="enable: valid">Add</button>
+              <button class="btn btn-default btn-sm" type="submit">Add</button>
             </span>
           </div>
         </div>
       </form>
-      <div>
-        <div class="list-group" data-bind="foreach: entries">
-          <a href="#" class="list-group-item" data-bind="click: play">
-            <div class="media" data-bind="if: title()">
-              <div class="media-left">
-                <div class="playlist-thumb">
-                  <img class="media-object" data-bind="attr: { src: thumbnail }" />
-                  <span class="label label-default timestamp" data-bind="text: length"></span>
-                </div>
-              </div>
-              <div class="media-right">
-                <button type="button" class="close" aria-label="Close" data-bind="click: remove"><span aria-hidden="true">&times;</span></button>
-                <div class="playlist-item-title">
-                  <span class="small" data-bind="text: title()"></span>
-                </div>
+      <div class="list-group" data-bind="foreach: results">
+        <a href="#" class="list-group-item" data-bind="click: add">
+          <div class="media">
+            <div class="media-left">
+              <div class="playlist-thumb">
+                <img class="media-object" data-bind="attr: { src: thumbnail }" />
+                <span class="label label-default timestamp" data-bind="text: length"></span>
               </div>
             </div>
-            <div class="text-center text-muted" data-bind="ifnot: title()">
-              <strong>Loading...</strong>
+            <div class="media-right">
+              <div class="playlist-item-title">
+                <span class="small" data-bind="text: title"></span>
+              </div>
             </div>
-          </a>
-        </div>
+          </div>
+        </a>
       </div>
     </div>
     <div class="col-lg-2 col-sm-4">
+      <h6 class="text-muted">Playlist</h6>
+      <div class="list-group" data-bind="foreach: entries">
+        <a href="#" class="list-group-item" data-bind="click: play">
+          <div class="media" data-bind="if: title()">
+            <div class="media-left">
+              <div class="playlist-thumb">
+                <img class="media-object" data-bind="attr: { src: thumbnail }" />
+                <span class="label label-default timestamp" data-bind="text: length"></span>
+              </div>
+            </div>
+            <div class="media-right">
+              <button type="button" class="close" aria-label="Close" data-bind="click: remove"><span aria-hidden="true">&times;</span></button>
+              <div class="playlist-item-title">
+                <span class="small" data-bind="text: title()"></span>
+              </div>
+            </div>
+          </div>
+          <div class="text-center text-muted" data-bind="ifnot: title()">
+            <strong>Loading...</strong>
+          </div>
+        </a>
+      </div>
     </div>
     <div class="col-lg-8 col-lg-offset-2 col-sm-4">
       <form class="form-horizontal" data-bind="submit: seek">

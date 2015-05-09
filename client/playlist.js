@@ -64,6 +64,23 @@ module.exports = exports = function () {
 		});
 	}
 
+	/** 
+	 * ViewModel for a search result.
+	 */
+
+	function SearchResultViewModel (result) {
+		var self = this;
+		var videoId = result.item.id.videoId;
+
+		self.length = moment.duration(result.length, 'seconds').format();
+		self.title = result.item.snippet.title;
+		self.thumbnail = result.item.snippet.thumbnails.default.url;
+
+		self.add = function () {
+			sync.add(videoId);
+		};
+	}
+
 	/**
 	 * Observe sync playlist and map it to playlist entry view models.
 	 */
@@ -91,15 +108,24 @@ module.exports = exports = function () {
 		var self = this;
 		self.entries = ko.observableArray();
 		self.link = ko.observable('');
+		self.results = ko.observableArray();
 		self.add = function () {
-			if (!self.valid()) { return; }
-			var id = youtube.parseUrl(self.link());
-			sync.add(id);
+			var query = self.link();
+			if (query == '') {
+				self.results([]);
+				return;
+			}
 			self.link('');
+			var id = youtube.parseUrl(query);
+			if (id === null) {
+				youtube.search(query, function (err, results) {
+					if (err) { alert(JSON.stringify(err)); return; }
+					self.results(results.map(function (result) { return new SearchResultViewModel(result); }));
+				});
+			} else {
+				sync.add(id);
+			}
 		};
-		self.valid = ko.computed(function() {
-			return youtube.parseUrl(self.link()) !== null;
-		});
 		self.seek = function () {
 			sync.seek(moment.duration(self.seekTime()).asSeconds());
 		};

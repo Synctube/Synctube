@@ -22,6 +22,10 @@ module.exports = exports = function () {
 	var youtube;
 	window.onYouTubeIframeAPIReady = function () {
 		youtube = new YT.Player('player', {
+			playerVars: {
+				rel: 0,
+				showinfo: 0,
+			},
 			events: {
 				'onReady': onPlayerReady,
 				'onStateChange': onPlayerStateChange,

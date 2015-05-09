@@ -24,6 +24,7 @@ app.get('/', function (req, res) {
 		rooms: rooms.toArray().map(function (room) {
 			return {
 				name: room.name,
+				encoded: encodeURIComponent(room.name),
 				connected: Object.keys(room.connected).length,
 			};
 		}),

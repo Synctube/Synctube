@@ -1,10 +1,52 @@
 {{> header.html}}
-<div class="container">
+<div class="container-fluid">
+  <div class="row" data-bind="with: playlist()">
+    <div class="col-lg-8 col-lg-push-2 col-sm-12">
   <div id="player-wrapper">
     <div id="player"></div>
   </div>
-  <div data-bind="with: playlist()">
-    <div>
+    </div>
+    <div class="col-lg-2 col-lg-pull-8 col-sm-4">
+      <form class="form-horizontal" data-bind="submit: add">
+        <div class="form-group form-group-sm">
+          <label class="sr-only" for="link">
+            Add video link
+          </label>
+          <div class="input-group">
+            <input id="link" class="form-control" type="url" data-bind="value: link, valueUpdate: 'afterkeydown'" placeholder="Paste a YouTube URL"></input>
+            <span class="input-group-btn">
+              <button class="btn btn-default btn-sm" type="submit" data-bind="enable: valid">Add</button>
+            </span>
+          </div>
+        </div>
+      </form>
+      <div>
+        <div class="list-group" data-bind="foreach: entries">
+          <a href="#" class="list-group-item" data-bind="click: play">
+            <div class="media" data-bind="if: title()">
+              <div class="media-left">
+                <div class="playlist-thumb">
+                  <img class="media-object" data-bind="attr: { src: thumbnail }" />
+                  <span class="label label-default timestamp" data-bind="text: length"></span>
+                </div>
+              </div>
+              <div class="media-right">
+                <button type="button" class="close" aria-label="Close" data-bind="click: remove"><span aria-hidden="true">&times;</span></button>
+                <div class="playlist-item-title">
+                  <span class="small" data-bind="text: title()"></span>
+                </div>
+              </div>
+            </div>
+            <div class="text-center text-muted" data-bind="ifnot: title()">
+              <strong>Loading...</strong>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-2 col-sm-4">
+    </div>
+    <div class="col-lg-8 col-lg-offset-2 col-sm-4">
       <form class="form-horizontal" data-bind="submit: seek">
         <div class="form-group form-group-sm">
           <label class="sr-only" for="seekTime">
@@ -28,40 +70,6 @@
           <!-- /ko -->
         </button>
       </div>
-    </div>
-    <form class="form-horizontal" data-bind="submit: add">
-      <div class="form-group form-group-sm">
-        <label class="sr-only" for="link">
-          Add video link
-        </label>
-        <div class="input-group">
-          <input id="link" class="form-control" type="url" data-bind="value: link, valueUpdate: 'afterkeydown'" placeholder="Paste a YouTube URL"></input>
-          <span class="input-group-btn">
-            <button class="btn btn-default btn-sm" type="submit" data-bind="enable: valid">Add</button>
-          </span>
-        </div>
-      </div>
-    </form>
-    <div class="list-group" data-bind="foreach: entries">
-      <a href="#" class="list-group-item" data-bind="click: play">
-        <div class="media" data-bind="if: title()">
-          <div class="media-left">
-            <div class="playlist-thumb">
-              <img class="media-object" data-bind="attr: { src: thumbnail }" />
-              <span class="label label-default timestamp" data-bind="text: length"></span>
-            </div>
-          </div>
-          <div class="media-right">
-            <button type="button" class="close" aria-label="Close" data-bind="click: remove"><span aria-hidden="true">&times;</span></button>
-            <div class="playlist-item-title">
-              <span class="small" data-bind="text: title()"></span>
-            </div>
-          </div>
-        </div>
-        <div class="text-center text-muted" data-bind="ifnot: title()">
-          <strong>Loading...</strong>
-        </div>
-      </a>
     </div>
   </div>
 </div>

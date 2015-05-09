@@ -11,21 +11,40 @@
       </form>
       <button data-bind="click: playpause, text: playing() ? 'Pause' : 'Play'"></button>
     </div>
-    <form data-bind="submit: add">
-      <input data-bind="value: link, valueUpdate: 'afterkeydown'" placeholder="Paste a YouTube URL"></input>
-      <button type="submit" data-bind="enable: valid">Add</button>
-    </form>
-    <ul data-bind="foreach: entries">
-      <li>
-        <div>
-          <img data-bind="attr: { src: thumbnail }" />
-          <span data-bind="text: title() || 'Loading...'" style="font-weight: bold"></span>
-          (<span data-bind="text: length"></span>)
-          <button data-bind="click: play">Play</button>
-          <button data-bind="click: remove">Remove</button>
+    <form class="form-horizontal" data-bind="submit: add">
+      <div class="form-group form-group-sm">
+        <label class="sr-only" for="link">
+          Add video link
+        </label>
+        <div class="input-group">
+          <input id="link" class="form-control" type="url" data-bind="value: link, valueUpdate: 'afterkeydown'" placeholder="Paste a YouTube URL"></input>
+          <span class="input-group-btn">
+            <button class="btn btn-default btn-sm" type="submit" data-bind="enable: valid">Add</button>
+          </span>
         </div>
-      </li>
-    </ul>
+      </div>
+    </form>
+    <div class="list-group" data-bind="foreach: entries">
+      <a href="#" class="list-group-item" data-bind="click: play">
+        <div class="media" data-bind="if: title()">
+          <div class="media-left">
+            <div class="playlist-thumb">
+              <img class="media-object" data-bind="attr: { src: thumbnail }" />
+              <span class="label label-default timestamp" data-bind="text: length"></span>
+            </div>
+          </div>
+          <div class="media-right">
+            <button type="button" class="close" aria-label="Close" data-bind="click: remove"><span aria-hidden="true">&times;</span></button>
+            <div class="playlist-item-title">
+              <span class="small" data-bind="text: title()"></span>
+            </div>
+          </div>
+        </div>
+        <div class="text-center text-muted" data-bind="ifnot: title()">
+          <strong>Loading...</strong>
+        </div>
+      </a>
+    </div>
   </div>
 </div>
 {{> footer.html}}

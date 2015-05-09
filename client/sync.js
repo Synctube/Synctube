@@ -100,7 +100,7 @@ module.exports = exports = function () {
 
 		setInterval(function () {
 			resync(false);
-		}, 200);
+		}, 1000);
 
 		function resync (always) {
 			syncVideo();

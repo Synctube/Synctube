@@ -65,8 +65,12 @@ sockets.on('listen', function (io) {
 	});
 
 	io.sockets.on('connection', function (socket) {
+		socket.once('join', safesocket(1, function (name, callback) {
+			join(socket, name);
+		}));
+	});
 
-		var name = unescape(url.parse(socket.handshake.headers.referer || '').pathname.split('/')[2]);
+	function join (socket, name) {
 
 		socket.join(name);
 
@@ -120,6 +124,7 @@ sockets.on('listen', function (io) {
 
 		socket.emit('playlist', runner.playlist.getNodes());
 		sendState(socket, runner);
-	});
+
+	}
 
 });

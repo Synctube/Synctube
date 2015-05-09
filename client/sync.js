@@ -134,6 +134,13 @@ module.exports = exports = function () {
 	});
 
 	/**
+	 * Join room.
+	 */
+
+	var name = decodeURIComponent(window.location.pathname.split('/')[2]);
+	socket.emit('join', name);
+
+	/**
 	 * Sync module interface.
 	 */
 

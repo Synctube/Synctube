@@ -9,7 +9,16 @@
         <input data-bind="value: seekTime" placeholder="hh:mm:ss"></input>
         <button type="submit">Seek</button>
       </form>
-      <button data-bind="click: playpause, text: playing() ? 'Pause' : 'Play'"></button>
+      <div>
+        <button class="btn btn-default btn-block" data-bind="click: playpause">
+          <!-- ko if: playing() -->
+          <span class="glyphicon glyphicon-pause" aria-hidden="true"></span> Pause
+          <!-- /ko -->
+          <!-- ko ifnot: playing() -->
+          <span class="glyphicon glyphicon-play" aria-hidden="true"></span> Play
+          <!-- /ko -->
+        </button>
+      </div>
     </div>
     <form class="form-horizontal" data-bind="submit: add">
       <div class="form-group form-group-sm">

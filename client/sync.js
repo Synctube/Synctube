@@ -156,6 +156,9 @@ module.exports = exports = function () {
 		add: function (id) {
 			socket.emit('add', id);
 		},
+		move: function (key, beforeKey) {
+			socket.emit('move', key, beforeKey);
+		},
 		seek: function (time) {
 			socket.emit('seek', time);
 		},

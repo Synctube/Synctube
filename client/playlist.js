@@ -46,6 +46,11 @@ module.exports = exports = function () {
 			sync.remove(key);
 		};
 
+		self.moveUp = function () {
+			var before = sync.playlist.before(key);
+			sync.move(key, before ? before.key : null);
+		};
+
 		request({
 			uri: 'https://www.googleapis.com/youtube/v3/videos',
 			qs: {

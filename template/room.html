@@ -64,8 +64,13 @@
     <div class="col-lg-2 col-sm-4">
       <h6 class="text-muted">Playlist</h6>
       <div class="list-group" data-bind="foreach: entries">
-        <a href="#" class="list-group-item" data-bind="click: play">
+        <li class="list-group-item">
           <div class="media" data-bind="if: title()">
+            <div class="btn-group-vertical playlist-item-buttons" role="group" aria-label="...">
+              <button class="btn btn-default btn-xs btn-block" type="button" data-bind="click: remove"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+              <button class="btn btn-default btn-xs btn-block" type="button" data-bind="click: moveUp"><span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span></button>
+              <button class="btn btn-default btn-xs btn-block" type="button" data-bind="click: play"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></button>
+            </div>
             <div class="media-left">
               <div class="playlist-thumb">
                 <img class="media-object" data-bind="attr: { src: thumbnail }" />
@@ -73,7 +78,6 @@
               </div>
             </div>
             <div class="media-right">
-              <button type="button" class="close" aria-label="Close" data-bind="click: remove"><span aria-hidden="true">&times;</span></button>
               <div class="playlist-item-title">
                 <span class="small" data-bind="text: title()"></span>
               </div>
@@ -82,7 +86,7 @@
           <div class="text-center text-muted" data-bind="ifnot: title()">
             <strong>Loading...</strong>
           </div>
-        </a>
+        </li>
       </div>
     </div>
   </div>

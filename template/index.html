@@ -1,0 +1,42 @@
+{{> header.html}}
+<div class="jumbotron">
+  <div class="container">
+    <h1>Watch together.</h1>
+    <p>Synchronize videos across the web with Synctube. Join a room or create your own to get started.</p>
+  </div>
+</div>
+<div class="container" data-bind="with: rooms">
+  <form class="form-horizontal" data-bind="submit: create">
+    <label for="roomname" class="sr-only">Room name</label>
+    <div class="input-group">
+      <input type="text" class="form-control" id="roomname" placeholder="Room name" data-bind="value: name">
+      <span class="input-group-btn">
+        <button type="submit" class="btn btn-default">Create room</button>
+      </span>
+    </div>
+  </form>
+</div>
+<div class="container">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Room Name</th>
+        <th>Connected Users</th>
+      </tr>
+    </thead>
+    <tbody>
+    {{#rooms}}
+      <tr>
+        <td><a href="/rooms/{{encoded}}">{{name}}</a></td>
+        <td>{{connected}}</td>
+      </tr>
+    {{/rooms}}
+    {{^rooms}}
+      <tr>
+        <td colspan="2" class="text-center text-muted">There are no rooms right now. Create your own!</td>
+      </tr>
+    {{/rooms}}
+    </tbody>
+  </table>
+</div>
+{{> footer.html}}

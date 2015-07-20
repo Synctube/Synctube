@@ -17,3 +17,18 @@ build
 .grunt
 
 node_modules
+
+# VS2013 files
+
+.gitattributes
+*.suo
+*.njsproj
+
+# Build tools
+
+bower_components
+
+# Generated files
+
+static/main*.js*
+static/style.css*

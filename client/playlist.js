@@ -49,7 +49,7 @@ module.exports = exports = function () {
 
 		self.moveUp = function () {
 			var before = sync.playlist.before(key);
-			sync.move(key, before ? before.key : null);
+			sync.move(key, before);
 		};
 
 		request({

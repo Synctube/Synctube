@@ -7,6 +7,7 @@ var youtube = require('../lib/youtube');
 var PlaylistRunner = require('../lib/playlistrunner');
 var rooms = require('../lib/rooms');
 var safesocket = require('safesocket');
+var shuffle = require('knuth-shuffle').knuthShuffle;
 var sockets = require('./sockets');
 var url = require('url');
 
@@ -102,6 +103,17 @@ sockets.on('listen', function (io) {
 		socket.on('move', safesocket(2, function (key, beforeKey, callback) {
 			var success = runner.playlist.move(key, beforeKey);
 			callback(success);
+		}));
+
+		socket.on('shuffle', safesocket(0, function (callback) {
+			var keys = shuffle(runner.playlist.getKeys());
+			var prev = null;
+			while (keys.length > 0) {
+				var key = keys.pop();
+				runner.playlist.move(key, prev);
+				prev = key;
+			}
+			callback();
 		}));
 
 		socket.on('cue', safesocket(1, function (key, callback) {

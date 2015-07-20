@@ -159,6 +159,9 @@ module.exports = exports = function () {
 		move: function (key, beforeKey) {
 			socket.emit('move', key, beforeKey);
 		},
+		shuffle: function () {
+			socket.emit('shuffle');
+		},
 		seek: function (time) {
 			socket.emit('seek', time);
 		},

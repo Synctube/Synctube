@@ -8,7 +8,6 @@ var sync = require('./sync');
 var request = require('request');
 var config = require('../config');
 var youtube = require('../lib/youtube');
-var shuffle = require('knuth-shuffle').knuthShuffle;
 
 require('moment-duration-format');
 
@@ -147,13 +146,7 @@ module.exports = exports = function () {
 			self.playing(sync.state.playing);
 		});
 		self.shuffle = function () {
-			var keys = shuffle(sync.playlist.getKeys());
-			var prev = null;
-			while (keys.length > 0) {
-				var key = keys.pop();
-				sync.move(key, prev);
-				prev = key;
-			}
+			sync.shuffle();
 		};
 	})();
 

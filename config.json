@@ -3,6 +3,6 @@
 		"port": 3000
 	},
 	"youtube": {
-		"serverApiKey": ""
+		"apiKey": ""
 	}
 }

@@ -64,7 +64,7 @@ module.exports = exports = function () {
 			qs: {
 				part: 'snippet',
 				id: videoId,
-				key: config.youtube.serverApiKey,
+				key: config.youtube.apiKey,
 			},
 			json: true,
 		}, function (err, res, body) {

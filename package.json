@@ -34,6 +34,7 @@
         ]
     },
     "browser": {
+        "./config.json": "./config-client.json",
         "request": "browser-request"
     },
     "browserify-shim": {

@@ -24,6 +24,14 @@ module.exports = exports = function () {
 	sync = sync();
 
 	/**
+	 * Duration formatting.
+	 */
+
+	function formatDuration (d) {
+		return d.format(d.asHours() < 1 ? 'm:ss' : 'h:mm:ss', { trim: false });
+	}
+
+	/**
 	 * ViewModel for an individual playlist entry.
 	 */
 
@@ -35,7 +43,7 @@ module.exports = exports = function () {
 		var length = entry.value.length;
 
 		self.title = ko.observable();
-		self.length = moment.duration(length, 'seconds').format();
+		self.length = formatDuration(moment.duration(length, 'seconds'));
 		self.thumbnail = ko.observable();
 
 		self.play = function () {
@@ -56,7 +64,7 @@ module.exports = exports = function () {
 			qs: {
 				part: 'snippet',
 				id: videoId,
-				key: config.youtube.serverApiKey,
+				key: config.youtube.apiKey,
 			},
 			json: true,
 		}, function (err, res, body) {
@@ -77,7 +85,7 @@ module.exports = exports = function () {
 		var self = this;
 		var videoId = result.item.id.videoId;
 
-		self.length = moment.duration(result.length, 'seconds').format();
+		self.length = formatDuration(moment.duration(result.length, 'seconds'));
 		self.title = result.item.snippet.title;
 		self.thumbnail = result.item.snippet.thumbnails.default.url;
 

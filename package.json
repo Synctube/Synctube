@@ -3,6 +3,7 @@
     "version": "0.1.1",
     "description": "Realtime web video synchronization.",
     "author": "Henry Merriam <henry@zephyrhosting.net>",
+    "main": "server",
     "dependencies": {
         "browser-request": "^0.3.3",
         "domready": "^1.0.7",
@@ -54,6 +55,6 @@
         "dev": "parallelshell \"npm run watch\" \"npm run nodemon\"",
         "postinstall": "bower install"
     },
-    "engines": { "node": "0.10.x" },
+    "engines": { "node": "^0.10.36" },
     "private": true
 }

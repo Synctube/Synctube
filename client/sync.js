@@ -165,8 +165,11 @@ module.exports = exports = function () {
 		seek: function (time) {
 			socket.emit('seek', time);
 		},
-		playpause: function () {
-			socket.emit('playpause');
+		play: function () {
+			socket.emit('play');
+		},
+		pause: function () {
+			socket.emit('pause');
 		},
 	};
 

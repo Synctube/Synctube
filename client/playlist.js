@@ -144,7 +144,11 @@ module.exports = exports = function () {
 		};
 		self.seekTime = ko.observable('');
 		self.playpause = function () {
-			sync.playpause();
+			if (self.playing()) {
+				sync.pause();
+			} else {
+				sync.play();
+			}
 		};
 		self.playing = ko.observable(false);
 		sync.state.on('play', function () {

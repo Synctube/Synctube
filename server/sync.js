@@ -129,8 +129,13 @@ sockets.on('listen', function (io) {
 			callback();
 		}));
 
-		socket.on('playpause', safesocket(0, function (callback) {
-			runner.state.playing = !runner.state.playing;
+		socket.on('play', safesocket(0, function (callback) {
+			runner.state.playing = true;
+			callback();
+		}));
+
+		socket.on('pause', safesocket(0, function (callback) {
+			runner.state.playing = false;
 			callback();
 		}));
 

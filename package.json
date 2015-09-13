@@ -53,7 +53,7 @@
         "watch:js": "watch \"npm run build:js && npm run build:min\" lib/ client/",
         "nodemon": "nodemon --watch lib --watch server --watch server.js --watch template --ext js,html server.js",
         "dev": "parallelshell \"npm run watch\" \"npm run nodemon\"",
-        "postinstall": "bower install"
+        "postinstall": "bower install && npm run build"
     },
     "engines": { "node": "^0.10.36" },
     "private": true

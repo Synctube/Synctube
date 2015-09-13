@@ -49,5 +49,5 @@ app.get('/rooms/:name', function (req, res) {
 
 app.use(express.static(__dirname + '/static'));
 
-var server = app.listen(process.env.PORT || config.listen.port);
+var server = app.listen(config.listen.port);
 sockets.listen(server);

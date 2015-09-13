@@ -44,6 +44,7 @@
         "socket.io-client": "global:io"
     },
     "scripts": {
+        "start": "node .",
         "build": "npm run build:css && npm run build:js && npm run build:min",
         "build:css": "lessc --include-path=\"less:bower_components\" --clean-css less/main.less static/style.css",
         "build:js": "browserify client/main.js --debug | exorcist static/main.js.map > static/main.js",

@@ -45,6 +45,7 @@
         "knockout": "global:ko",
         "socket.io-client": "global:io"
     },
+    "cacheDirectories": ["node_modules", "bower_components"],
     "scripts": {
         "start": "node .",
         "build": "npm run build:css && npm run build:js && npm run build:min",

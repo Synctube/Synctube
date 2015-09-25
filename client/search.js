@@ -51,12 +51,32 @@ module.exports = exports = new (function () {
 		self.link('');
 		var id = youtube.parseUrl(query);
 		if (id === null) {
-			youtube.search(query, function (err, results) {
-				if (err) { alert(JSON.stringify(err)); return; }
-				self.results(results.map(function (result) { return new SearchResultViewModel(result); }));
-			});
+			self.lastQuery(query);
+			youtube.search(query, _searchResult);
 		} else {
 			sync.add(id);
 		}
 	};
+	self.lastQuery = ko.observable();
+	self.prevToken = ko.observable();
+	self.nextToken = ko.observable();
+	self.prevDisabled = ko.computed(function () { return self.prevToken() == null; });
+	self.nextDisabled = ko.computed(function () { return self.nextToken() == null; });
+	self.prev = function () {
+		if (self.prevToken()) {
+			youtube.searchPage(self.lastQuery(), self.prevToken(), _searchResult);
+		}
+	};
+	self.next = function () {
+		if (self.nextToken()) {
+			youtube.searchPage(self.lastQuery(), self.nextToken(), _searchResult);
+		}
+	};
+
+	function _searchResult (err, results) {
+		if (err) { alert(JSON.stringify(err)); return; }
+		self.prevToken(results.prevToken);
+		self.nextToken(results.nextToken);
+		self.results(results.items.map(function (result) { return new SearchResultViewModel(result); }));
+	}
 })();

@@ -43,6 +43,12 @@
           </div>
         </div>
       </form>
+      <nav>
+        <ul class="pager">
+          <li class="previous" data-bind="css: { disabled: prevDisabled }"><a href="#" data-bind="click: prev"><span aria-hidden="true">&laquo;</span></a></li>
+          <li class="next" data-bind="css: { disabled: nextDisabled }"><a href="#" data-bind="click: next"><span aria-hidden="true">&raquo;</span></a></li>
+        </ul>
+      </nav>
       <div class="list-group" data-bind="foreach: results">
         <a href="#" class="list-group-item" data-bind="click: add">
           <div class="media">

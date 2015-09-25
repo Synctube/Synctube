@@ -1,8 +1,0 @@
-{
-	"listen": {
-		"port": 3000
-	},
-	"youtube": {
-		"apiKey": ""
-	}
-}

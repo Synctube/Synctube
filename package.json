@@ -21,6 +21,7 @@
         "bower": "^1.2.8",
         "browserify": "^9.0.8",
         "browserify-shim": "^3.8.5",
+        "envify": "^3.4.0",
         "exorcist": "^0.3.0",
         "less": "^2.5.0",
         "less-plugin-clean-css": "^1.5.0",
@@ -31,11 +32,12 @@
     },
     "browserify": {
         "transform": [
+            "envify",
             "browserify-shim"
         ]
     },
     "browser": {
-        "./config.json": "./config-client.json",
+        "./config.js": "./config-client.js",
         "request": "browser-request"
     },
     "browserify-shim": {
@@ -43,7 +45,9 @@
         "knockout": "global:ko",
         "socket.io-client": "global:io"
     },
+    "cacheDirectories": ["node_modules", "bower_components"],
     "scripts": {
+        "start": "node .",
         "build": "npm run build:css && npm run build:js && npm run build:min",
         "build:css": "lessc --include-path=\"less:bower_components\" --clean-css less/main.less static/style.css",
         "build:js": "browserify client/main.js --debug | exorcist static/main.js.map > static/main.js",
@@ -53,7 +57,7 @@
         "watch:js": "watch \"npm run build:js && npm run build:min\" lib/ client/",
         "nodemon": "nodemon --watch lib --watch server --watch server.js --watch template --ext js,html server.js",
         "dev": "parallelshell \"npm run watch\" \"npm run nodemon\"",
-        "postinstall": "bower install"
+        "postinstall": "bower install && npm run build"
     },
     "engines": { "node": "^0.10.36" },
     "private": true

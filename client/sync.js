@@ -3,7 +3,6 @@
  */
 
 var io = require('socket.io-client');
-var player = require('./player');
 var LinkedMap = require('../lib/linkedmap');
 var VideoState = require('../lib/videostate');
 
@@ -11,7 +10,7 @@ var VideoState = require('../lib/videostate');
  * Module exports.
  */
 
-module.exports = exports = function () {
+module.exports = exports = function (player) {
 
 	/**
 	 * Establish socket connection.
@@ -63,12 +62,6 @@ module.exports = exports = function () {
 	socket.on('remove', function (key) {
 		playlist.remove(key);
 	});
-
-	/**
-	 * Instantiate player module.
-	 */
-
-	player = player();
 
 	/**
 	 * Synchronize player with local video state.

@@ -8,6 +8,7 @@ var sync = require('./sync');
 var request = require('request');
 var config = require('../config');
 var youtube = require('../lib/youtube');
+var player = require('./player');
 
 require('moment-duration-format');
 
@@ -21,7 +22,7 @@ module.exports = exports = function () {
 	 * Instantiate sync module.
 	 */
 
-	sync = sync();
+	sync = sync(player());
 
 	/**
 	 * Duration formatting.

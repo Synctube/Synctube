@@ -8,6 +8,7 @@ var sync = require('./sync');
 var request = require('request');
 var config = require('../config');
 var youtube = require('../lib/youtube');
+var player = require('./player');
 
 require('moment-duration-format');
 
@@ -21,7 +22,7 @@ module.exports = exports = function () {
 	 * Instantiate sync module.
 	 */
 
-	sync = sync();
+	sync = sync(player());
 
 	/**
 	 * Duration formatting.
@@ -45,6 +46,10 @@ module.exports = exports = function () {
 		self.title = ko.observable();
 		self.length = formatDuration(moment.duration(length, 'seconds'));
 		self.thumbnail = ko.observable();
+
+		self.isCurrent = ko.computed(function () {
+			return key == playlist.currentKey();
+		});
 
 		self.play = function () {
 			sync.cue(key);
@@ -151,11 +156,11 @@ module.exports = exports = function () {
 			}
 		};
 		self.playing = ko.observable(false);
-		sync.state.on('play', function () {
-			self.playing(sync.state.playing);
-		});
-		sync.state.on('pause', function () {
-			self.playing(sync.state.playing);
+		self.currentKey = ko.observable(null);
+		sync.state.on('state', function () {
+			var state = sync.state.getState();
+			self.playing(state.playing);
+			self.currentKey(state.key || null);
 		});
 		self.shuffle = function () {
 			sync.shuffle();

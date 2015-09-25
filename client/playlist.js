@@ -69,23 +69,6 @@ function PlaylistEntryViewModel(entry) {
 	});
 }
 
-/** 
- * ViewModel for a search result.
- */
-
-function SearchResultViewModel (result) {
-	var self = this;
-	var videoId = result.item.id.videoId;
-
-	self.length = formatDuration(moment.duration(result.length, 'seconds'));
-	self.title = result.item.snippet.title;
-	self.thumbnail = result.item.snippet.thumbnails.default.url;
-
-	self.add = function () {
-		sync.add(videoId);
-	};
-}
-
 /**
  * Observe sync playlist and map it to playlist entry view models.
  */
@@ -112,25 +95,6 @@ entries.on('remove', updatePlaylist);
 var playlist = module.exports = exports = new (function () {
 	var self = this;
 	self.entries = ko.observableArray();
-	self.link = ko.observable('');
-	self.results = ko.observableArray();
-	self.add = function () {
-		var query = self.link();
-		if (query == '') {
-			self.results([]);
-			return;
-		}
-		self.link('');
-		var id = youtube.parseUrl(query);
-		if (id === null) {
-			youtube.search(query, function (err, results) {
-				if (err) { alert(JSON.stringify(err)); return; }
-				self.results(results.map(function (result) { return new SearchResultViewModel(result); }));
-			});
-		} else {
-			sync.add(id);
-		}
-	};
 	self.seek = function () {
 		sync.seek(moment.duration(self.seekTime()).asSeconds());
 	};

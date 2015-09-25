@@ -30,8 +30,8 @@ bower_components
 
 # Generated files
 
-static/main*.js*
-static/style.css*
+static/*.js*
+static/*.css*
 
 # Environment
 

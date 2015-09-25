@@ -290,6 +290,16 @@ local moveVideo = function (time, key, before)
   setState(state, true)
 end
 
+-------------------------------
+-- Room expiration functions --
+-------------------------------
+
+local deleteRoom = function ()
+  redis.call('DEL', _nodesKey)
+  redis.call('DEL', _stateKey)
+  redis.call('DEL', _lengthKey)
+end
+
 --------------------
 -- Function calls --
 --------------------
@@ -321,6 +331,8 @@ elseif call == "state" then
   local state = updateState(time)
   setState(state)
   return cjson.encode(formatState(state))
+elseif call == "deleteRoom" then
+  deleteRoom()
 else
   return "Unrecognized command: " .. call
 end

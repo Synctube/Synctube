@@ -29,6 +29,10 @@ sockets.on('listen', function (io) {
 		});
 	});
 
+	rooms.on('destroy', function (room) {
+		datastore.deleteRoom(room.name);
+	});
+
 	io.sockets.on('connection', function (socket) {
 		socket.once('join', safesocket(1, function (name, callback) {
 			join(socket, name);

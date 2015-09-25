@@ -83,6 +83,10 @@ Datastore.prototype.getState = function (room, cb) {
 	scripts.run('hashlist', getKeys(room), [eventsChannel, room, 'state', getTime()], wrap(cb));
 };
 
+Datastore.prototype.deleteRoom = function (room, cb) {
+	scripts.run('hashlist', getKeys(room), [eventsChannel, room, 'deleteRoom', getTime()], wrap(cb));
+};
+
 /**
  * Timekeeping.
  */

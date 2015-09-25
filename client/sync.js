@@ -17,7 +17,7 @@ module.exports = exports = function () {
 	 * Establish socket connection.
 	 */
 
-	var socket = io();
+	var socket = io({ forceNew: true });
 
 	/**
 	 * Maintain a local video state.

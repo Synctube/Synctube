@@ -47,6 +47,10 @@ module.exports = exports = function () {
 		self.length = formatDuration(moment.duration(length, 'seconds'));
 		self.thumbnail = ko.observable();
 
+		self.isCurrent = ko.computed(function () {
+			return key == playlist.currentKey();
+		});
+
 		self.play = function () {
 			sync.cue(key);
 		};
@@ -156,6 +160,7 @@ module.exports = exports = function () {
 		sync.state.on('state', function () {
 			var state = sync.state.getState();
 			self.playing(state.playing);
+			self.currentKey(state.key || null);
 		});
 		self.shuffle = function () {
 			sync.shuffle();

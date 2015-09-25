@@ -65,7 +65,7 @@
       <h6 class="text-muted">Playlist</h6>
       <button class="btn btn-default btn-xs btn-block" type="button" data-bind="click: shuffle"><span class="glyphicon glyphicon-random" aria-hidden="true"></span> Shuffle</button>
       <div class="list-group" data-bind="foreach: entries">
-        <li class="list-group-item">
+        <li class="list-group-item" data-bind="css: { active: isCurrent }">
           <div class="media" data-bind="if: title()">
             <div class="btn-group-vertical playlist-item-buttons" role="group" aria-label="...">
               <button class="btn btn-default btn-xs btn-block" type="button" data-bind="click: remove"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>

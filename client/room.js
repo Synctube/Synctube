@@ -5,7 +5,6 @@
 var domready = require('domready');
 var ko = require('knockout');
 var playlist = require('./playlist');
-var rooms = require('./rooms');
 
 /**
  * Module exports.
@@ -13,7 +12,6 @@ var rooms = require('./rooms');
 
 var room = module.exports = exports = {
 	playlist: playlist,
-	rooms: rooms,
 };
 
 domready(function () {

@@ -7,12 +7,16 @@ var ko = require('knockout');
 var playlist = require('./playlist');
 
 /**
- * Module exports.
+ * Room ViewModel.
  */
 
 var room = module.exports = exports = {
 	playlist: playlist,
 };
+
+/**
+ * Apply Knockout bindings.
+ */
 
 domready(function () {
 	ko.applyBindings(room);

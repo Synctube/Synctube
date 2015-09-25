@@ -53,7 +53,8 @@ var player = module.exports = exports = {
 		youtube.loadVideoById(video.id, time);
 	},
 	getVideo: function () {
-		return youtube.getVideoData().video_id;
+		var data = youtube.getVideoData();
+		return data ? data.video_id : null;
 	},
 	getTime: function () {
 		return youtube.getCurrentTime();

@@ -2,13 +2,14 @@
  * Module dependencies.
  */
 
+var domready = require('domready');
 var ko = require('knockout');
 
 /**
- * Module exports.
+ * Browse view model.
  */
 
-var rooms = module.exports = exports = new (function () {
+function BrowseViewModel () {
 	var self = this;
 	self.name = ko.observable('');
 	self.create = function () {
@@ -17,4 +18,12 @@ var rooms = module.exports = exports = new (function () {
 			window.location.pathname = '/rooms/' + name;
 		}
 	};
-})();
+}
+
+/**
+ * Apply Knockout bindings.
+ */
+
+domready(function () {
+	ko.applyBindings(new BrowseViewModel());
+});

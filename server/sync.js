@@ -2,34 +2,12 @@
  * Module dependencies.
  */
 
-var asyncevent = require('../lib/asyncevent');
+var async = require('async');
 var youtube = require('../lib/youtube');
-var PlaylistRunner = require('../lib/playlistrunner');
+var datastore = require('./datastore');
 var rooms = require('../lib/rooms');
 var safesocket = require('safesocket');
-var shuffle = require('knuth-shuffle').knuthShuffle;
 var sockets = require('./sockets');
-var url = require('url');
-
-/**
- * Augment rooms with PlaylistRunner.
- */
-
-rooms.on('create', function (room) {
-	room.runner = new PlaylistRunner();
-});
-
-rooms.on('destroy', function (room) {
-	room.runner.state.video = null;
-});
-
-/**
- * Message formatters.
- */
-
-function sendState (targets, runner) {
-	targets.emit('state', runner.state);
-}
 
 /**
  * Socket events.
@@ -38,30 +16,16 @@ function sendState (targets, runner) {
 sockets.on('listen', function (io) {
 
 	rooms.on('create', function (room) {
-		var runner = room.runner;
-
-		runner.playlist.on('clear', function () {
-			io.sockets.in(room.name).emit('clear');
-		});
-
-		runner.playlist.on('put', function (key, value) {
-			io.sockets.in(room.name).emit('put', key, value);
-		});
-
-		runner.playlist.on('move', function (key, before) {
-			io.sockets.in(room.name).emit('move', key, before);
-		});
-
-		runner.playlist.on('remove', function (key) {
-			io.sockets.in(room.name).emit('remove', key);
-		});
-
-		var changed = asyncevent(function () {
-			sendState(io.sockets.in(room.name), runner);
-		});
-
-		['play', 'pause', 'seek', 'change'].forEach(function (emitter) {
-			runner.state.on(emitter, changed);
+		datastore.on('room:' + room.name, function (event, args) {
+			if (event == 'state') {
+				io.sockets.in(room.name).emit('state', args[0]);
+			} else if (event == 'put') {
+				io.sockets.in(room.name).emit('put', args[0], args[1]);
+			} else if (event == 'move') {
+				io.sockets.in(room.name).emit('move', args[0], args[1]);
+			} else if (event == 'remove') {
+				io.sockets.in(room.name).emit('remove', args[0]);
+			}
 		});
 	});
 
@@ -76,71 +40,55 @@ sockets.on('listen', function (io) {
 		socket.join(name);
 
 		var room = rooms.get(name).add(socket);
-		var runner = room.runner;
 
 		socket.on('disconnect', function () {
 			room.remove(socket);
 		});
 
-		socket.on('clear', safesocket(0, function (callback) {
-			runner.playlist.clear();
-			callback();
-		}));
-
 		socket.on('add', safesocket(1, function (id, callback) {
 			youtube.getVideoLength(id, function (err, length) {
 				if (err) { return callback(err); }
 				var video = { id: id, length: length };
-				callback(null, runner.playlist.push(video));
+				datastore.addVideo(name, video, callback);
 			});
 		}));
 
 		socket.on('delete', safesocket(1, function (key, callback) {
-			var removed = runner.playlist.remove(key);
-			callback(removed);
+			datastore.deleteVideo(name, key, callback);
 		}));
 
 		socket.on('move', safesocket(2, function (key, beforeKey, callback) {
-			var success = runner.playlist.move(key, beforeKey);
-			callback(success);
+			datastore.moveVideo(name, key, beforeKey, callback);
 		}));
 
 		socket.on('shuffle', safesocket(0, function (callback) {
-			var keys = shuffle(runner.playlist.getKeys());
-			var prev = null;
-			while (keys.length > 0) {
-				var key = keys.pop();
-				runner.playlist.move(key, prev);
-				prev = key;
-			}
-			callback();
+			datastore.shufflePlaylist(name, callback);
 		}));
 
 		socket.on('cue', safesocket(1, function (key, callback) {
-			var entry = runner.playlist.getNode(key)
-			if (entry) {
-				runner.cueVideo(entry);
-			}
-			callback(entry);
+			datastore.playVideo(name, key, callback);
 		}));
 
 		socket.on('seek', safesocket(1, function (time, callback) {
-			runner.state.time = time;
-			callback();
+			datastore.setOffset(name, time, callback);
 		}));
 
 		socket.on('play', safesocket(0, function (callback) {
-			runner.state.playing = true;
-			callback();
+			datastore.setPlaying(name, true, callback);
 		}));
 
 		socket.on('pause', safesocket(0, function (callback) {
-			runner.state.playing = false;
-			callback();
+			datastore.setPlaying(name, false, callback);
 		}));
 
-		socket.emit('playlist', runner.playlist.getNodes());
-		sendState(socket, runner);
+		async.parallel({
+			playlist: async.apply(datastore.getPlaylist, name),
+			state: async.apply(datastore.getState, name),
+		}, function (err, result) {
+			if (err) { console.warn(err); return; }
+			socket.emit('playlist', result.playlist);
+			socket.emit('state', result.state);
+		});
 
 	}
 

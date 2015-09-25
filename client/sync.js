@@ -4,7 +4,7 @@
 
 var io = require('socket.io-client');
 var LinkedMap = require('../lib/linkedmap');
-var VideoState = require('../lib/videostate');
+var Simulation = require('../lib/simulation');
 
 /**
  * Module exports.
@@ -17,22 +17,6 @@ module.exports = exports = function (player) {
 	 */
 
 	var socket = io({ forceNew: true });
-
-	/**
-	 * Maintain a local video state.
-	 */
-
-	var local = new VideoState();
-
-	/**
-	 * Synchronize local video state with remote state updates.
-	 */
-
-	socket.on('state', function (state) {
-		local.video = state.video;
-		local.playing = state.playing;
-		local.time = state.time;
-	});
 
 	/**
 	 * Synchronize local playlist with the remote.
@@ -64,52 +48,41 @@ module.exports = exports = function (player) {
 	});
 
 	/**
-	 * Synchronize player with local video state.
+	 * Synchronize local state with remote state updates.
+	 */
+
+	var simulation = new Simulation(playlist);
+
+	socket.on('state', function (state) {
+		simulation.setState(state);
+	});
+
+	/**
+	 * Synchronize player with local state.
 	 */
 
 	player.on('ready', function () {
 
-		local.on('play', function () {
-			player.play();
-		});
+		function updatePlayer (state) {
 
-		local.on('pause', function () {
-			player.pause();
-		});
-
-		local.on('change', function () {
-			syncVideo();
-		});
-
-		local.on('seek', function () {
-			syncTime(false);
-		});
-
-		player.on('change', function () {
-			resync(false);
-		});
-
-		resync(true);
-
-		setInterval(function () {
-			resync(false);
-		}, 1000);
-
-		function resync (always) {
-			syncVideo();
-			syncPlaying();
-			syncTime(always);
-		}
-
-		function syncVideo () {
-			if (local.video && (player.getVideo() !== local.video.id)) {
-				player.load(local.video, local.time);
+			if (state.key == null) {
+				player.pause();
+				player.load({ id: null }, 0);
+				return;
 			}
-		}
 
-		function syncPlaying () {
-			if (player.isPlaying() !== local.playing) {
-				if (local.playing) {
+			var video = playlist.get(state.key);
+
+			if (player.getVideo() != video.id) {
+				player.load(video, state.offset);
+			} else {
+				if (Math.abs(player.getTime() - state.offset) > 1) {
+					player.seek(state.offset + 0.25);
+				}
+			}
+
+			if (player.isPlaying() != state.playing) {
+				if (state.playing) {
 					player.play();
 				} else {
 					player.pause();
@@ -117,12 +90,24 @@ module.exports = exports = function (player) {
 			}
 		}
 
-		function syncTime (always) {
-			var delta = Math.abs(player.getTime() - local.time);
-			if ((player.isPlaying() && (delta > 0.55)) || (always && (delta > 0))) {
-				player.seek(local.time);
-			}
+		function fetchAndUpdate() {
+			var state = simulation.getState();
+			updatePlayer(state);
 		}
+
+		simulation.on('state', updatePlayer);
+
+		var _poll = setInterval(fetchAndUpdate, 1000);
+
+		player.on('change', function () {
+			if (_poll != null) {
+				clearInterval(_poll);
+				_poll = null;
+			}
+			fetchAndUpdate();
+		});
+
+		updatePlayer(simulation.getState());
 
 	});
 
@@ -139,7 +124,7 @@ module.exports = exports = function (player) {
 
 	return {
 		playlist: playlist,
-		state: local,
+		state: simulation,
 		cue: function (key) {
 			socket.emit('cue', key);
 		},

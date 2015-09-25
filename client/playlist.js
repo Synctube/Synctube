@@ -152,11 +152,10 @@ module.exports = exports = function () {
 			}
 		};
 		self.playing = ko.observable(false);
-		sync.state.on('play', function () {
-			self.playing(sync.state.playing);
-		});
-		sync.state.on('pause', function () {
-			self.playing(sync.state.playing);
+		self.currentKey = ko.observable(null);
+		sync.state.on('state', function () {
+			var state = sync.state.getState();
+			self.playing(state.playing);
 		});
 		self.shuffle = function () {
 			sync.shuffle();

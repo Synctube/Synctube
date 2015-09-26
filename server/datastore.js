@@ -115,6 +115,7 @@ var eventsChannel = 'events';
  */
 
 function wrap (cb) {
+	if (!cb) { cb = function () {}; }
 	return function (err, result) {
 		if (err) { console.warn(err); return cb(err); }
 		return cb(null, JSON.parse(result));

@@ -134,7 +134,7 @@ function heartbeat () {
 		_id = result.id;
 		if (result.dead) {
 			result.dead.forEach(function (dead) {
-				scripts.run('dead', ['server:' + dead + ':rooms', 'rooms:counts', 'rooms:timeouts'], [getTime()], wrap());
+				scripts.run('dead', ['server:' + dead + ':rooms', 'rooms:counts', 'rooms:timeouts', 'servers:timeouts'], [getTime(), dead], wrap());
 			});
 		}
 	}));

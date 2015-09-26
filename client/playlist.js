@@ -12,152 +12,95 @@ var youtube = require('../lib/youtube');
 require('moment-duration-format');
 
 /**
- * Module exports.
+ * Duration formatting.
  */
 
-module.exports = exports = function () {
+function formatDuration (d) {
+	return d.format(d.asHours() < 1 ? 'm:ss' : 'h:mm:ss', { trim: false });
+}
 
-	/**
-	 * Instantiate sync module.
-	 */
+/**
+ * ViewModel for an individual playlist entry.
+ */
 
-	sync = sync();
+function PlaylistEntryViewModel(entry) {
+	var self = this;
 
-	/**
-	 * Duration formatting.
-	 */
+	var key = self.key = entry.key;
+	var videoId = entry.value.id;
+	var length = entry.value.length;
 
-	function formatDuration (d) {
-		return d.format(d.asHours() < 1 ? 'm:ss' : 'h:mm:ss', { trim: false });
-	}
+	self.title = ko.observable();
+	self.length = formatDuration(moment.duration(length, 'seconds'));
+	self.thumbnail = ko.observable();
 
-	/**
-	 * ViewModel for an individual playlist entry.
-	 */
+	self.isCurrent = ko.computed(function () {
+		return key == playlist.currentKey();
+	});
 
-	function PlaylistEntryViewModel(entry) {
-		var self = this;
+	self.play = function () {
+		sync.cue(key);
+	};
 
-		var key = self.key = entry.key;
-		var videoId = entry.value.id;
-		var length = entry.value.length;
+	self.remove = function () {
+		sync.remove(key);
+	};
 
-		self.title = ko.observable();
-		self.length = formatDuration(moment.duration(length, 'seconds'));
-		self.thumbnail = ko.observable();
+	self.moveUp = function () {
+		var before = sync.playlist.before(key);
+		sync.move(key, before);
+	};
 
-		self.play = function () {
-			sync.cue(key);
-		};
+	request({
+		uri: 'https://www.googleapis.com/youtube/v3/videos',
+		qs: {
+			part: 'snippet',
+			id: videoId,
+			key: config.youtube.apiKey,
+		},
+		json: true,
+	}, function (err, res, body) {
+		err = err || body.error;
+		if (err) { return; }
+		if (body.items.length === 0) { return; }
+		var item = body.items[0].snippet;
+		self.title(item.title);
+		self.thumbnail(item.thumbnails.default.url);
+	});
+}
 
-		self.remove = function () {
-			sync.remove(key);
-		};
+/**
+ * Observe sync playlist and map it to playlist entry view models.
+ */
 
-		self.moveUp = function () {
-			var before = sync.playlist.before(key);
-			sync.move(key, before);
-		};
+var entries = sync.playlist.map(function (key, value) { return new PlaylistEntryViewModel({ key: key, value: value }); }).collect();
 
-		request({
-			uri: 'https://www.googleapis.com/youtube/v3/videos',
-			qs: {
-				part: 'snippet',
-				id: videoId,
-				key: config.youtube.apiKey,
-			},
-			json: true,
-		}, function (err, res, body) {
-			err = err || body.error;
-			if (err) { return; }
-			if (body.items.length === 0) { return; }
-			var item = body.items[0].snippet;
-			self.title(item.title);
-			self.thumbnail(item.thumbnails.default.url);
-		});
-	}
+/**
+ * Observe mapped playlist and update Knockout observable.
+ */
 
-	/** 
-	 * ViewModel for a search result.
-	 */
+function updatePlaylist () {
+	playlist.entries(entries.getValues());
+}
 
-	function SearchResultViewModel (result) {
-		var self = this;
-		var videoId = result.item.id.videoId;
+entries.on('clear', updatePlaylist);
+entries.on('put', updatePlaylist);
+entries.on('move', updatePlaylist);
+entries.on('remove', updatePlaylist);
 
-		self.length = formatDuration(moment.duration(result.length, 'seconds'));
-		self.title = result.item.snippet.title;
-		self.thumbnail = result.item.snippet.thumbnails.default.url;
+/**
+ * Playlist view model.
+ */
 
-		self.add = function () {
-			sync.add(videoId);
-		};
-	}
-
-	/**
-	 * Observe sync playlist and map it to playlist entry view models.
-	 */
-
-	var entries = sync.playlist.map(function (key, value) { return new PlaylistEntryViewModel({ key: key, value: value }); }).collect();
-
-	/**
-	 * Observe mapped playlist and update Knockout observable.
-	 */
-
-	function updatePlaylist () {
-		playlist.entries(entries.getValues());
-	}
-
-	entries.on('clear', updatePlaylist);
-	entries.on('put', updatePlaylist);
-	entries.on('move', updatePlaylist);
-	entries.on('remove', updatePlaylist);
-
-	/**
-	 * Playlist view model.
-	 */
-
-	var playlist = new (function () {
-		var self = this;
-		self.entries = ko.observableArray();
-		self.link = ko.observable('');
-		self.results = ko.observableArray();
-		self.add = function () {
-			var query = self.link();
-			if (query == '') {
-				self.results([]);
-				return;
-			}
-			self.link('');
-			var id = youtube.parseUrl(query);
-			if (id === null) {
-				youtube.search(query, function (err, results) {
-					if (err) { alert(JSON.stringify(err)); return; }
-					self.results(results.map(function (result) { return new SearchResultViewModel(result); }));
-				});
-			} else {
-				sync.add(id);
-			}
-		};
-		self.seek = function () {
-			sync.seek(moment.duration(self.seekTime()).asSeconds());
-		};
-		self.seekTime = ko.observable('');
-		self.playpause = function () {
-			sync.playpause();
-		};
-		self.playing = ko.observable(false);
-		sync.state.on('play', function () {
-			self.playing(sync.state.playing);
-		});
-		sync.state.on('pause', function () {
-			self.playing(sync.state.playing);
-		});
-		self.shuffle = function () {
-			sync.shuffle();
-		};
-	})();
-
-	return playlist;
-
-};
+var playlist = module.exports = exports = new (function () {
+	var self = this;
+	self.entries = ko.observableArray();
+	self.currentKey = ko.observable(null);
+	sync.state.on('state', function () {
+		var state = sync.state.getState();
+		self.currentKey(state.key || null);
+	});
+	self.shuffle = function () {
+		sync.shuffle();
+	};
+})();

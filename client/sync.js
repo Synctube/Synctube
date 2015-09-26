@@ -5,169 +5,143 @@
 var io = require('socket.io-client');
 var player = require('./player');
 var LinkedMap = require('../lib/linkedmap');
-var VideoState = require('../lib/videostate');
+var Simulation = require('../lib/simulation');
 
 /**
- * Module exports.
+ * Establish socket connection.
  */
 
-module.exports = exports = function () {
+var socket = io({ forceNew: true });
 
-	/**
-	 * Establish socket connection.
-	 */
+/**
+ * Synchronize local playlist with the remote.
+ */
 
-	var socket = io();
+var playlist = new LinkedMap();
 
-	/**
-	 * Maintain a local video state.
-	 */
-
-	var local = new VideoState();
-
-	/**
-	 * Synchronize local video state with remote state updates.
-	 */
-
-	socket.on('state', function (state) {
-		local.video = state.video;
-		local.playing = state.playing;
-		local.time = state.time;
+socket.on('playlist', function (entries) {
+	playlist.clear();
+	entries.forEach(function (entry) {
+		playlist.put(entry.key, entry.value);
 	});
+});
 
-	/**
-	 * Synchronize local playlist with the remote.
-	 */
+socket.on('clear', function () {
+	playlist.clear();
+});
 
-	var playlist = new LinkedMap();
+socket.on('put', function (key, value) {
+	playlist.put(key, value);
+});
 
-	socket.on('playlist', function (entries) {
-		playlist.clear();
-		entries.forEach(function (entry) {
-			playlist.put(entry.key, entry.value);
-		});
-	});
+socket.on('move', function (key, before) {
+	playlist.move(key, before);
+});
 
-	socket.on('clear', function () {
-		playlist.clear();
-	});
+socket.on('remove', function (key) {
+	playlist.remove(key);
+});
 
-	socket.on('put', function (key, value) {
-		playlist.put(key, value);
-	});
+/**
+ * Synchronize local state with remote state updates.
+ */
 
-	socket.on('move', function (key, before) {
-		playlist.move(key, before);
-	});
+var simulation = new Simulation(playlist);
 
-	socket.on('remove', function (key) {
-		playlist.remove(key);
-	});
+socket.on('state', function (state) {
+	simulation.setState(state);
+});
 
-	/**
-	 * Instantiate player module.
-	 */
+/**
+ * Synchronize player with local state.
+ */
 
-	player = player();
+player.on('ready', function () {
 
-	/**
-	 * Synchronize player with local video state.
-	 */
+	function updatePlayer (state) {
 
-	player.on('ready', function () {
-
-		local.on('play', function () {
-			player.play();
-		});
-
-		local.on('pause', function () {
+		if (state.key == null) {
 			player.pause();
-		});
-
-		local.on('change', function () {
-			syncVideo();
-		});
-
-		local.on('seek', function () {
-			syncTime(false);
-		});
-
-		player.on('change', function () {
-			resync(false);
-		});
-
-		resync(true);
-
-		setInterval(function () {
-			resync(false);
-		}, 1000);
-
-		function resync (always) {
-			syncVideo();
-			syncPlaying();
-			syncTime(always);
+			player.load({ id: null }, 0);
+			return;
 		}
 
-		function syncVideo () {
-			if (local.video && (player.getVideo() !== local.video.id)) {
-				player.load(local.video, local.time);
+		var video = playlist.get(state.key);
+
+		if (player.getVideo() != video.id) {
+			player.load(video, state.offset);
+		} else {
+			if (Math.abs(player.getTime() - state.offset) > 1) {
+				player.seek(state.offset + 0.25);
 			}
 		}
 
-		function syncPlaying () {
-			if (player.isPlaying() !== local.playing) {
-				if (local.playing) {
-					player.play();
-				} else {
-					player.pause();
-				}
+		if (player.isPlaying() != state.playing) {
+			if (state.playing) {
+				player.play();
+			} else {
+				player.pause();
 			}
 		}
+	}
 
-		function syncTime (always) {
-			var delta = Math.abs(player.getTime() - local.time);
-			if ((player.isPlaying() && (delta > 0.55)) || (always && (delta > 0))) {
-				player.seek(local.time);
-			}
+	function fetchAndUpdate() {
+		var state = simulation.getState();
+		updatePlayer(state);
+	}
+
+	simulation.on('state', updatePlayer);
+
+	var _poll = setInterval(fetchAndUpdate, 1000);
+
+	player.on('change', function () {
+		if (_poll != null) {
+			clearInterval(_poll);
+			_poll = null;
 		}
-
+		fetchAndUpdate();
 	});
 
-	/**
-	 * Join room.
-	 */
+	updatePlayer(simulation.getState());
 
-	var name = decodeURIComponent(window.location.pathname.split('/')[2]);
-	socket.emit('join', name);
+});
 
-	/**
-	 * Sync module interface.
-	 */
+/**
+ * Join room.
+ */
 
-	return {
-		playlist: playlist,
-		state: local,
-		cue: function (key) {
-			socket.emit('cue', key);
-		},
-		remove: function (key) {
-			socket.emit('delete', key);
-		},
-		add: function (id) {
-			socket.emit('add', id);
-		},
-		move: function (key, beforeKey) {
-			socket.emit('move', key, beforeKey);
-		},
-		shuffle: function () {
-			socket.emit('shuffle');
-		},
-		seek: function (time) {
-			socket.emit('seek', time);
-		},
-		playpause: function () {
-			socket.emit('playpause');
-		},
-	};
+var name = decodeURIComponent(window.location.pathname.split('/')[2]);
+socket.emit('join', name);
 
+/**
+ * Sync module interface.
+ */
+
+module.exports = exports = {
+	playlist: playlist,
+	state: simulation,
+	cue: function (key) {
+		socket.emit('cue', key);
+	},
+	remove: function (key) {
+		socket.emit('delete', key);
+	},
+	add: function (id) {
+		socket.emit('add', id);
+	},
+	move: function (key, beforeKey) {
+		socket.emit('move', key, beforeKey);
+	},
+	shuffle: function () {
+		socket.emit('shuffle');
+	},
+	seek: function (time) {
+		socket.emit('seek', time);
+	},
+	play: function () {
+		socket.emit('play');
+	},
+	pause: function () {
+		socket.emit('pause');
+	},
 };

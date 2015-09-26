@@ -1,16 +1,20 @@
 {
     "name": "synctube",
-    "version": "0.1.1",
+    "version": "0.2.0",
     "description": "Realtime web video synchronization.",
     "author": "Henry Merriam <henry@zephyrhosting.net>",
+    "main": "server",
     "dependencies": {
+        "async": "^1.4.2",
         "browser-request": "^0.3.3",
         "domready": "^1.0.7",
-        "knuth-shuffle": "^1.0.1",
         "moment": "^2.5.1",
         "moment-duration-format": "^1.3.0",
         "moment-interval": "^0.2.1",
         "mu2": "^0.5.20",
+        "redis": "^1.0.0",
+        "redis-scripto": "^0.1.3",
+        "redis-url": "^1.2.1",
         "request": "^2.53.0",
         "safesocket": "^1.0.0",
         "socket.io": "^1.3.5",
@@ -20,6 +24,7 @@
         "bower": "^1.2.8",
         "browserify": "^9.0.8",
         "browserify-shim": "^3.8.5",
+        "envify": "^3.4.0",
         "exorcist": "^0.3.0",
         "less": "^2.5.0",
         "less-plugin-clean-css": "^1.5.0",
@@ -30,11 +35,12 @@
     },
     "browserify": {
         "transform": [
+            "envify",
             "browserify-shim"
         ]
     },
     "browser": {
-        "./config.json": "./config-client.json",
+        "./config.js": "./config-client.js",
         "request": "browser-request"
     },
     "browserify-shim": {
@@ -42,18 +48,24 @@
         "knockout": "global:ko",
         "socket.io-client": "global:io"
     },
+    "cacheDirectories": ["node_modules", "bower_components"],
     "scripts": {
+        "start": "node .",
         "build": "npm run build:css && npm run build:js && npm run build:min",
         "build:css": "lessc --include-path=\"less:bower_components\" --clean-css less/main.less static/style.css",
-        "build:js": "browserify client/main.js --debug | exorcist static/main.js.map > static/main.js",
-        "build:min": "uglifyjs static/main.js -m -c --source-map static/main.min.js.map --in-source-map static/main.js.map --source-map-url main.min.js.map > static/main.min.js",
+        "build:js": "npm run build:js:browse && npm run build:js:room",
+        "build:js:browse": "browserify client/browse.js --debug | exorcist static/browse.js.map > static/browse.js",
+        "build:js:room": "browserify client/room.js --debug | exorcist static/room.js.map > static/room.js",
+        "build:min": "npm run build:min:browse && npm run build:min:room",
+        "build:min:browse": "uglifyjs static/browse.js -m -c --source-map static/browse.min.js.map --in-source-map static/browse.js.map --source-map-url browse.min.js.map > static/browse.min.js",
+        "build:min:room": "uglifyjs static/room.js -m -c --source-map static/room.min.js.map --in-source-map static/room.js.map --source-map-url room.min.js.map > static/room.min.js",
         "watch": "parallelshell \"npm run watch:css\" \"npm run watch:js\"",
         "watch:css": "watch \"npm run build:css\" less/",
         "watch:js": "watch \"npm run build:js && npm run build:min\" lib/ client/",
         "nodemon": "nodemon --watch lib --watch server --watch server.js --watch template --ext js,html server.js",
         "dev": "parallelshell \"npm run watch\" \"npm run nodemon\"",
-        "postinstall": "bower install"
+        "postinstall": "bower install && npm run build"
     },
-    "engines": { "node": "0.10.x" },
+    "engines": { "node": "^0.10.36" },
     "private": true
 }

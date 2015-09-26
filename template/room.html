@@ -1,7 +1,7 @@
 {{> header.html}}
 <div class="container-fluid">
-  <div class="row" data-bind="with: playlist()">
-    <div class="col-lg-8 col-lg-push-2 col-sm-12">
+  <div class="row">
+    <div class="col-lg-8 col-lg-push-2 col-sm-12" data-bind="with: controls">
       <div class="embed-responsive embed-responsive-16by9">
         <div class="embed-responsive-item" id="player"></div>
       </div>
@@ -29,7 +29,7 @@
         </button>
       </div>
     </div>
-    <div class="col-lg-2 col-lg-pull-8 col-sm-4">
+    <div class="col-lg-2 col-lg-pull-8 col-sm-4" data-bind="with: search">
       <form class="form-horizontal" data-bind="submit: add">
         <div class="form-group form-group-sm">
           <label class="sr-only" for="link">
@@ -43,6 +43,12 @@
           </div>
         </div>
       </form>
+      <nav>
+        <ul class="pager">
+          <li class="previous" data-bind="css: { disabled: prevDisabled }"><a href="#" data-bind="click: prev"><span aria-hidden="true">&laquo;</span></a></li>
+          <li class="next" data-bind="css: { disabled: nextDisabled }"><a href="#" data-bind="click: next"><span aria-hidden="true">&raquo;</span></a></li>
+        </ul>
+      </nav>
       <div class="list-group" data-bind="foreach: results">
         <a href="#" class="list-group-item" data-bind="click: add">
           <div class="media">
@@ -61,11 +67,11 @@
         </a>
       </div>
     </div>
-    <div class="col-lg-2 col-sm-4">
+    <div class="col-lg-2 col-sm-4" data-bind="with: playlist">
       <h6 class="text-muted">Playlist</h6>
       <button class="btn btn-default btn-xs btn-block" type="button" data-bind="click: shuffle"><span class="glyphicon glyphicon-random" aria-hidden="true"></span> Shuffle</button>
       <div class="list-group" data-bind="foreach: entries">
-        <li class="list-group-item">
+        <li class="list-group-item" data-bind="css: { active: isCurrent }">
           <div class="media" data-bind="if: title()">
             <div class="btn-group-vertical playlist-item-buttons" role="group" aria-label="...">
               <button class="btn btn-default btn-xs btn-block" type="button" data-bind="click: remove"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
@@ -92,4 +98,5 @@
     </div>
   </div>
 </div>
+<script src="/room.min.js"></script>
 {{> footer.html}}

@@ -20,7 +20,7 @@ var simulation = new Simulation(playlist);
  * Establish socket connection.
  */
 
-var socket = io({ forceNew: true });
+var socket = io();
 
 socket.on('connect', function () {
 

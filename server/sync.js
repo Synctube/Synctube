@@ -26,6 +26,10 @@ sockets.on('listen', function (io) {
 		}
 	});
 
+	datastore.on('users', function (room, count) {
+		io.sockets.in(room).emit('users', count);
+	});
+
 	io.sockets.on('connection', function (socket) {
 		socket.once('join', safesocket(1, function (name, callback) {
 			datastore.join(name, function (err) {
@@ -82,10 +86,12 @@ sockets.on('listen', function (io) {
 		async.parallel({
 			playlist: async.apply(datastore.getPlaylist, name),
 			state: async.apply(datastore.getState, name),
+			users: async.apply(datastore.getUserCount, name),
 		}, function (err, result) {
 			if (err) { console.warn(err); return; }
 			socket.emit('playlist', result.playlist);
 			socket.emit('state', result.state);
+			socket.emit('users', result.users);
 		});
 
 	}

@@ -6,6 +6,8 @@ var io = require('socket.io-client');
 var player = require('./player');
 var LinkedMap = require('../lib/linkedmap');
 var Simulation = require('../lib/simulation');
+var EventEmitter = require('events').EventEmitter;
+var util = require('util');
 
 /**
  * Establish socket connection.
@@ -117,31 +119,52 @@ socket.emit('join', name);
  * Sync module interface.
  */
 
-module.exports = exports = {
-	playlist: playlist,
-	state: simulation,
-	cue: function (key) {
-		socket.emit('cue', key);
-	},
-	remove: function (key) {
-		socket.emit('delete', key);
-	},
-	add: function (id) {
-		socket.emit('add', id);
-	},
-	move: function (key, beforeKey) {
-		socket.emit('move', key, beforeKey);
-	},
-	shuffle: function () {
-		socket.emit('shuffle');
-	},
-	seek: function (time) {
-		socket.emit('seek', time);
-	},
-	play: function () {
-		socket.emit('play');
-	},
-	pause: function () {
-		socket.emit('pause');
-	},
+function Sync () {
+	EventEmitter.call(this);
+	this.playlist = playlist;
+	this.state = simulation;
+}
+
+util.inherits(Sync, EventEmitter);
+
+Sync.prototype.cue = function (key) {
+	socket.emit('cue', key);
 };
+
+Sync.prototype.remove = function (key) {
+	socket.emit('delete', key);
+};
+
+Sync.prototype.add = function (id) {
+	socket.emit('add', id);
+};
+
+Sync.prototype.move = function (key, beforeKey) {
+	socket.emit('move', key, beforeKey);
+};
+
+Sync.prototype.shuffle = function () {
+	socket.emit('shuffle');
+};
+
+Sync.prototype.seek = function (time) {
+	socket.emit('seek', time);
+};
+
+Sync.prototype.play = function () {
+	socket.emit('play');
+};
+
+Sync.prototype.pause = function () {
+	socket.emit('pause');
+};
+
+var sync = module.exports = exports = new Sync();
+
+/**
+ * Emit user count updates.
+ */
+
+socket.on('users', function (count) {
+	sync.emit('users', count);
+});

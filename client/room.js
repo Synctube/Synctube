@@ -7,6 +7,7 @@ var ko = require('knockout');
 var controls = require('./controls');
 var playlist = require('./playlist');
 var search = require('./search');
+var users = require('./users');
 
 /**
  * Room ViewModel.
@@ -16,6 +17,7 @@ var room = module.exports = exports = {
 	controls: controls,
 	playlist: playlist,
 	search: search,
+	users: users,
 };
 
 /**

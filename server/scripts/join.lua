@@ -24,6 +24,8 @@ if redis.call('SREM', roomExpiredKey, room) == 1 then
 end
 
 redis.call('ZINCRBY', serverRoomsKey, 1, room)
-redis.call('ZINCRBY', roomCountsKey, 1, room)
+local count = tonumber(redis.call('ZINCRBY', roomCountsKey, 1, room))
+
+redis.call('PUBLISH', 'users', cjson.encode({room=room,count=count}))
 
 redis.call('ZREM', roomTimeoutsKey, room)

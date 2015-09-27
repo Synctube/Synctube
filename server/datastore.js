@@ -27,7 +27,8 @@ var datastore = module.exports = exports = new Datastore();
  * Scripting client.
  */
 
-var scripts = new Scripto(redis.connect());
+var client = redis.connect();
+var scripts = new Scripto(client);
 scripts.loadFromDir(__dirname + '/scripts/');
 
 /**
@@ -38,9 +39,14 @@ var subscriber = redis.connect();
 subscriber.on('ready', function () {
 	subscriber.on('message', function (channel, message) {
 		var obj = JSON.parse(message);
-		datastore.emit('room', obj.room, obj.event, obj.args);
+		if (channel == 'events') {
+			datastore.emit('room', obj.room, obj.event, obj.args);
+		} else if (channel == 'users') {
+			datastore.emit('users', obj.room, obj.count);
+		}
 	});
 	subscriber.subscribe(eventsChannel);
+	subscriber.subscribe('users');
 });
 
 /**
@@ -173,4 +179,8 @@ Datastore.prototype.leave = function (room, cb) {
 		'rooms:counts',
 		'rooms:timeouts',
 	], [room, getTime()], wrap(cb));
+};
+
+Datastore.prototype.getUserCount = function (room, cb) {
+	client.zscore('rooms:counts', room, wrap(cb));
 };

@@ -5,8 +5,6 @@
 var ko = require('knockout');
 var moment = require('moment');
 var sync = require('./sync');
-var request = require('request');
-var config = require('../config');
 var youtube = require('../lib/youtube');
 
 require('moment-duration-format');
@@ -51,19 +49,8 @@ function PlaylistEntryViewModel(entry) {
 		sync.move(key, before);
 	};
 
-	request({
-		uri: 'https://www.googleapis.com/youtube/v3/videos',
-		qs: {
-			part: 'snippet',
-			id: videoId,
-			key: config.youtube.apiKey,
-		},
-		json: true,
-	}, function (err, res, body) {
-		err = err || body.error;
+	youtube.getVideoSnippet(videoId, function (err, item) {
 		if (err) { return; }
-		if (body.items.length === 0) { return; }
-		var item = body.items[0].snippet;
 		self.title(item.title);
 		self.thumbnail(item.thumbnails.default.url);
 	});

@@ -10,16 +10,23 @@ var EventEmitter = require('events').EventEmitter;
 var util = require('util');
 
 /**
+ * Local playlist and state simulation.
+ */
+
+var playlist = new LinkedMap();
+var simulation = new Simulation(playlist);
+
+/**
  * Establish socket connection.
  */
 
 var socket = io({ forceNew: true });
 
+socket.on('connect', function () {
+
 /**
  * Synchronize local playlist with the remote.
  */
-
-var playlist = new LinkedMap();
 
 socket.on('playlist', function (entries) {
 	playlist.clear();
@@ -48,10 +55,25 @@ socket.on('remove', function (key) {
  * Synchronize local state with remote state updates.
  */
 
-var simulation = new Simulation(playlist);
-
 socket.on('state', function (state) {
 	simulation.setState(state);
+});
+
+/**
+ * Emit user count updates.
+ */
+
+socket.on('users', function (count) {
+	sync.emit('users', count);
+});
+
+/**
+ * Join room.
+ */
+
+var name = decodeURIComponent(window.location.pathname.split('/')[2]);
+socket.emit('join', name);
+
 });
 
 /**
@@ -109,13 +131,6 @@ player.on('ready', function () {
 });
 
 /**
- * Join room.
- */
-
-var name = decodeURIComponent(window.location.pathname.split('/')[2]);
-socket.emit('join', name);
-
-/**
  * Sync module interface.
  */
 
@@ -160,11 +175,3 @@ Sync.prototype.pause = function () {
 };
 
 var sync = module.exports = exports = new Sync();
-
-/**
- * Emit user count updates.
- */
-
-socket.on('users', function (count) {
-	sync.emit('users', count);
-});

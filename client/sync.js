@@ -24,55 +24,55 @@ var socket = io();
 
 socket.on('connect', function () {
 
-/**
- * Synchronize local playlist with the remote.
- */
+	/**
+	 * Synchronize local playlist with the remote.
+	 */
 
-socket.on('playlist', function (entries) {
-	playlist.clear();
-	entries.forEach(function (entry) {
-		playlist.put(entry.key, entry.value);
+	socket.on('playlist', function (entries) {
+		playlist.clear();
+		entries.forEach(function (entry) {
+			playlist.put(entry.key, entry.value);
+		});
 	});
-});
 
-socket.on('clear', function () {
-	playlist.clear();
-});
+	socket.on('clear', function () {
+		playlist.clear();
+	});
 
-socket.on('put', function (key, value) {
-	playlist.put(key, value);
-});
+	socket.on('put', function (key, value) {
+		playlist.put(key, value);
+	});
 
-socket.on('move', function (key, before) {
-	playlist.move(key, before);
-});
+	socket.on('move', function (key, before) {
+		playlist.move(key, before);
+	});
 
-socket.on('remove', function (key) {
-	playlist.remove(key);
-});
+	socket.on('remove', function (key) {
+		playlist.remove(key);
+	});
 
-/**
- * Synchronize local state with remote state updates.
- */
+	/**
+	 * Synchronize local state with remote state updates.
+	 */
 
-socket.on('state', function (state) {
-	simulation.setState(state);
-});
+	socket.on('state', function (state) {
+		simulation.setState(state);
+	});
 
-/**
- * Emit user count updates.
- */
+	/**
+	 * Emit user count updates.
+	 */
 
-socket.on('users', function (count) {
-	sync.emit('users', count);
-});
+	socket.on('users', function (count) {
+		sync.emit('users', count);
+	});
 
-/**
- * Join room.
- */
+	/**
+	 * Join room.
+	 */
 
-var name = decodeURIComponent(window.location.pathname.split('/')[2]);
-socket.emit('join', name);
+	var name = decodeURIComponent(window.location.pathname.split('/')[2]);
+	socket.emit('join', name);
 
 });
 

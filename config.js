@@ -4,7 +4,7 @@
 
 module.exports = exports = {
 	listen: {
-		port: process.env.PORT,
+		port: process.argv[2] || process.env.PORT,
 	},
 	youtube: {
 		apiKey: process.env.SYNCTUBE_SERVER_YOUTUBE_APIKEY,

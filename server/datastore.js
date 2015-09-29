@@ -27,7 +27,8 @@ var datastore = module.exports = exports = new Datastore();
  * Scripting client.
  */
 
-var scripts = new Scripto(redis.connect());
+var client = redis.connect();
+var scripts = new Scripto(client);
 scripts.loadFromDir(__dirname + '/scripts/');
 
 /**
@@ -38,9 +39,14 @@ var subscriber = redis.connect();
 subscriber.on('ready', function () {
 	subscriber.on('message', function (channel, message) {
 		var obj = JSON.parse(message);
-		datastore.emit('room:' + obj.room, obj.event, obj.args);
+		if (channel == 'events') {
+			datastore.emit('room', obj.room, obj.event, obj.args);
+		} else if (channel == 'users') {
+			datastore.emit('users', obj.room, obj.count);
+		}
 	});
 	subscriber.subscribe(eventsChannel);
+	subscriber.subscribe('users');
 });
 
 /**
@@ -121,3 +127,60 @@ function wrap (cb) {
 		return cb(null, JSON.parse(result));
 	};
 }
+
+/**
+ * Server heartbeat.
+ */
+
+var _id = null;
+
+function heartbeat () {
+	scripts.run('heartbeat', ['servers:counter', 'servers:timeouts'], [getTime(), _id], wrap(function (err, result) {
+		if (err) { return; }
+		_id = result.id;
+		if (result.dead) {
+			result.dead.forEach(function (dead) {
+				scripts.run('dead', ['server:' + dead + ':rooms', 'rooms:counts', 'rooms:timeouts', 'servers:timeouts'], [getTime(), dead], wrap());
+			});
+		}
+	}));
+}
+
+heartbeat();
+setInterval(heartbeat, 30 * 1000);
+
+/**
+ * Rooms.
+ */
+
+Datastore.prototype.getTopRooms = function (cb) {
+	scripts.run('browse', [
+		'rooms:counts',
+		'rooms:timeouts',
+		'rooms:expired'
+	], [getTime()], wrap(cb));
+};
+
+Datastore.prototype.join = function (room, cb) {
+	scripts.run('join', [
+		'server:' + _id + ':rooms',
+		'rooms:counts',
+		'rooms:timeouts',
+		'rooms:expired',
+		'room:' + room + ':nodes',
+		'room:' + room + ':state',
+		'room:' + room + ':length'
+	], [room, getTime()], wrap(cb));
+};
+
+Datastore.prototype.leave = function (room, cb) {
+	scripts.run('leave', [
+		'server:' + _id + ':rooms',
+		'rooms:counts',
+		'rooms:timeouts',
+	], [room, getTime()], wrap(cb));
+};
+
+Datastore.prototype.getUserCount = function (room, cb) {
+	client.zscore('rooms:counts', room, wrap(cb));
+};

@@ -1,32 +1,39 @@
 {{> header.html}}
 <div class="container-fluid">
   <div class="row">
-    <div class="col-lg-8 col-lg-push-2 col-sm-12" data-bind="with: controls">
+    <div class="col-lg-8 col-lg-push-2 col-sm-12">
       <div class="embed-responsive embed-responsive-16by9">
         <div class="embed-responsive-item" id="player"></div>
       </div>
-      <form class="form-horizontal" data-bind="submit: seek">
-        <div class="form-group form-group-sm">
-          <label class="sr-only" for="seekTime">
-            Seek to time
-          </label>
-          <div class="input-group">
-            <input id="seekTime" class="form-control" type="text" data-bind="value: seekTime" placeholder="hh:mm:ss"></input>
-            <span class="input-group-btn">
-              <button class="btn btn-default btn-sm" type="submit">Seek</button>
-            </span>
+      <div data-bind="with: controls">
+        <form class="form-horizontal" data-bind="submit: seek">
+          <div class="form-group form-group-sm">
+            <label class="sr-only" for="seekTime">
+              Seek to time
+            </label>
+            <div class="input-group">
+              <input id="seekTime" class="form-control" type="text" data-bind="value: seekTime" placeholder="hh:mm:ss"></input>
+              <span class="input-group-btn">
+                <button class="btn btn-default btn-sm" type="submit">Seek</button>
+              </span>
+            </div>
           </div>
+        </form>
+        <div>
+          <button class="btn btn-default btn-block" data-bind="click: playpause">
+            <!-- ko if: playing() -->
+            <span class="glyphicon glyphicon-pause" aria-hidden="true"></span> Pause
+            <!-- /ko -->
+            <!-- ko ifnot: playing() -->
+            <span class="glyphicon glyphicon-play" aria-hidden="true"></span> Play
+            <!-- /ko -->
+          </button>
         </div>
-      </form>
-      <div>
-        <button class="btn btn-default btn-block" data-bind="click: playpause">
-          <!-- ko if: playing() -->
-          <span class="glyphicon glyphicon-pause" aria-hidden="true"></span> Pause
-          <!-- /ko -->
-          <!-- ko ifnot: playing() -->
-          <span class="glyphicon glyphicon-play" aria-hidden="true"></span> Play
-          <!-- /ko -->
-        </button>
+      </div>
+      <div data-bind="with: users">
+        <h6 class="text-muted text-center" data-bind="if: count">
+          <span data-bind="text: count"></span> users here now
+        </h6>
       </div>
     </div>
     <div class="col-lg-2 col-lg-pull-8 col-sm-4" data-bind="with: search">

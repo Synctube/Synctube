@@ -6,50 +6,74 @@ var io = require('socket.io-client');
 var player = require('./player');
 var LinkedMap = require('../lib/linkedmap');
 var Simulation = require('../lib/simulation');
+var EventEmitter = require('events').EventEmitter;
+var util = require('util');
+
+/**
+ * Local playlist and state simulation.
+ */
+
+var playlist = new LinkedMap();
+var simulation = new Simulation(playlist);
 
 /**
  * Establish socket connection.
  */
 
-var socket = io({ forceNew: true });
+var socket = io();
 
-/**
- * Synchronize local playlist with the remote.
- */
+socket.on('connect', function () {
 
-var playlist = new LinkedMap();
+	/**
+	 * Synchronize local playlist with the remote.
+	 */
 
-socket.on('playlist', function (entries) {
-	playlist.clear();
-	entries.forEach(function (entry) {
-		playlist.put(entry.key, entry.value);
+	socket.on('playlist', function (entries) {
+		playlist.clear();
+		entries.forEach(function (entry) {
+			playlist.put(entry.key, entry.value);
+		});
 	});
-});
 
-socket.on('clear', function () {
-	playlist.clear();
-});
+	socket.on('clear', function () {
+		playlist.clear();
+	});
 
-socket.on('put', function (key, value) {
-	playlist.put(key, value);
-});
+	socket.on('put', function (key, value) {
+		playlist.put(key, value);
+	});
 
-socket.on('move', function (key, before) {
-	playlist.move(key, before);
-});
+	socket.on('move', function (key, before) {
+		playlist.move(key, before);
+	});
 
-socket.on('remove', function (key) {
-	playlist.remove(key);
-});
+	socket.on('remove', function (key) {
+		playlist.remove(key);
+	});
 
-/**
- * Synchronize local state with remote state updates.
- */
+	/**
+	 * Synchronize local state with remote state updates.
+	 */
 
-var simulation = new Simulation(playlist);
+	socket.on('state', function (state) {
+		simulation.setState(state);
+	});
 
-socket.on('state', function (state) {
-	simulation.setState(state);
+	/**
+	 * Emit user count updates.
+	 */
+
+	socket.on('users', function (count) {
+		sync.emit('users', count);
+	});
+
+	/**
+	 * Join room.
+	 */
+
+	var name = decodeURIComponent(window.location.pathname.split('/')[2]);
+	socket.emit('join', name);
+
 });
 
 /**
@@ -107,41 +131,47 @@ player.on('ready', function () {
 });
 
 /**
- * Join room.
- */
-
-var name = decodeURIComponent(window.location.pathname.split('/')[2]);
-socket.emit('join', name);
-
-/**
  * Sync module interface.
  */
 
-module.exports = exports = {
-	playlist: playlist,
-	state: simulation,
-	cue: function (key) {
-		socket.emit('cue', key);
-	},
-	remove: function (key) {
-		socket.emit('delete', key);
-	},
-	add: function (id) {
-		socket.emit('add', id);
-	},
-	move: function (key, beforeKey) {
-		socket.emit('move', key, beforeKey);
-	},
-	shuffle: function () {
-		socket.emit('shuffle');
-	},
-	seek: function (time) {
-		socket.emit('seek', time);
-	},
-	play: function () {
-		socket.emit('play');
-	},
-	pause: function () {
-		socket.emit('pause');
-	},
+function Sync () {
+	EventEmitter.call(this);
+	this.playlist = playlist;
+	this.state = simulation;
+}
+
+util.inherits(Sync, EventEmitter);
+
+Sync.prototype.cue = function (key) {
+	socket.emit('cue', key);
 };
+
+Sync.prototype.remove = function (key) {
+	socket.emit('delete', key);
+};
+
+Sync.prototype.add = function (id) {
+	socket.emit('add', id);
+};
+
+Sync.prototype.move = function (key, beforeKey) {
+	socket.emit('move', key, beforeKey);
+};
+
+Sync.prototype.shuffle = function () {
+	socket.emit('shuffle');
+};
+
+Sync.prototype.seek = function (time) {
+	socket.emit('seek', time);
+};
+
+Sync.prototype.play = function () {
+	socket.emit('play');
+};
+
+Sync.prototype.pause = function () {
+	socket.emit('pause');
+};
+
+var sync = module.exports = exports = new Sync();

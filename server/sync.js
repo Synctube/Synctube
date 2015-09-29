@@ -5,7 +5,6 @@
 var async = require('async');
 var youtube = require('../lib/youtube');
 var datastore = require('./datastore');
-var rooms = require('../lib/rooms');
 var safesocket = require('safesocket');
 var sockets = require('./sockets');
 
@@ -15,27 +14,28 @@ var sockets = require('./sockets');
 
 sockets.on('listen', function (io) {
 
-	rooms.on('create', function (room) {
-		datastore.on('room:' + room.name, function (event, args) {
-			if (event == 'state') {
-				io.sockets.in(room.name).emit('state', args[0]);
-			} else if (event == 'put') {
-				io.sockets.in(room.name).emit('put', args[0], args[1]);
-			} else if (event == 'move') {
-				io.sockets.in(room.name).emit('move', args[0], args[1]);
-			} else if (event == 'remove') {
-				io.sockets.in(room.name).emit('remove', args[0]);
-			}
-		});
+	datastore.on('room', function (room, event, args) {
+		if (event == 'state') {
+			io.sockets.in(room).emit('state', args[0]);
+		} else if (event == 'put') {
+			io.sockets.in(room).emit('put', args[0], args[1]);
+		} else if (event == 'move') {
+			io.sockets.in(room).emit('move', args[0], args[1]);
+		} else if (event == 'remove') {
+			io.sockets.in(room).emit('remove', args[0]);
+		}
 	});
 
-	rooms.on('destroy', function (room) {
-		datastore.deleteRoom(room.name);
+	datastore.on('users', function (room, count) {
+		io.sockets.in(room).emit('users', count);
 	});
 
 	io.sockets.on('connection', function (socket) {
 		socket.once('join', safesocket(1, function (name, callback) {
-			join(socket, name);
+			datastore.join(name, function (err) {
+				if (err) { return; }
+				join(socket, name);
+			});
 		}));
 	});
 
@@ -43,10 +43,8 @@ sockets.on('listen', function (io) {
 
 		socket.join(name);
 
-		var room = rooms.get(name).add(socket);
-
 		socket.on('disconnect', function () {
-			room.remove(socket);
+			datastore.leave(name);
 		});
 
 		socket.on('add', safesocket(1, function (id, callback) {
@@ -88,10 +86,12 @@ sockets.on('listen', function (io) {
 		async.parallel({
 			playlist: async.apply(datastore.getPlaylist, name),
 			state: async.apply(datastore.getState, name),
+			users: async.apply(datastore.getUserCount, name),
 		}, function (err, result) {
 			if (err) { console.warn(err); return; }
 			socket.emit('playlist', result.playlist);
 			socket.emit('state', result.state);
+			socket.emit('users', result.users);
 		});
 
 	}

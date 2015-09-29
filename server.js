@@ -4,7 +4,7 @@ var mu = require('mu2');
 
 var config = require('./config');
 var sockets = require('./server/sockets');
-var rooms = require('./lib/rooms');
+var datastore = require('./server/datastore');
 
 var clientVersion = require('socket.io/node_modules/socket.io-client/package').version;
 
@@ -20,23 +20,30 @@ function render(res, file, data) {
 }
 
 app.get('/', function (req, res) {
-	var data = {
-		rooms: rooms.toArray().map(function (room) {
-			return {
-				name: room.name,
-				encoded: encodeURIComponent(room.name),
-				connected: Object.keys(room.connected).length,
-			};
-		}),
-		socketioClientVersion: clientVersion,
-	};
-	res.format({
-		json: function (req, res) {
-			res.json(data);
-		},
-		html: function (req, res) {
-			render(res, 'index.html', data);
-		},
+	datastore.getTopRooms(function (err, rooms) {
+		if (err) {
+			res.status(500);
+			res.send('error');
+			return;
+		}
+		var data = {
+			rooms: rooms.map(function (room) {
+				return {
+					name: room.name,
+					encoded: encodeURIComponent(room.name),
+					connected: room.count,
+				};
+			}),
+			socketioClientVersion: clientVersion,
+		};
+		res.format({
+			json: function (req, res) {
+				res.json(data);
+			},
+			html: function (req, res) {
+				render(res, 'index.html', data);
+			},
+		});
 	});
 });
 

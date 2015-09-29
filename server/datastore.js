@@ -204,7 +204,7 @@ function collect () {
 			'room:' + _room + ':nodes',
 			'room:' + _room + ':state',
 			'room:' + _room + ':length',
-		], [room], function (err) {
+		], [_room], function (err) {
 			if (err) { return cb(err); }
 			return cb(null, _room != null);
 		});

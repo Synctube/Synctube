@@ -2,6 +2,7 @@
  * Module dependencies.
  */
 
+var async = require('async');
 var redis = require('redis-url');
 var Scripto = require('redis-scripto');
 var EventEmitter = require('events').EventEmitter;

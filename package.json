@@ -1,6 +1,6 @@
 {
     "name": "synctube",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "Realtime web video synchronization.",
     "author": "Henry Merriam <henry@zephyrhosting.net>",
     "main": "server",

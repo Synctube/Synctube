@@ -16,6 +16,10 @@ var util = require('util');
 var playlist = new LinkedMap();
 var simulation = new Simulation(playlist);
 
+simulation.on('state', function (state) {
+	sync.emit('state', state);
+});
+
 /**
  * Establish socket connection.
  */
@@ -137,7 +141,6 @@ player.on('ready', function () {
 function Sync () {
 	EventEmitter.call(this);
 	this.playlist = playlist;
-	this.state = simulation;
 }
 
 util.inherits(Sync, EventEmitter);

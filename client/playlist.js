@@ -83,7 +83,7 @@ var playlist = module.exports = exports = new (function () {
 	var self = this;
 	self.entries = ko.observableArray();
 	self.currentKey = ko.observable(null);
-	sync.state.on('state', function (state) {
+	sync.on('state', function (state) {
 		self.currentKey(state.key || null);
 	});
 	self.shuffle = function () {

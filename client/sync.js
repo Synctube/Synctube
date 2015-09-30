@@ -140,7 +140,7 @@ player.on('ready', function () {
 
 function Sync () {
 	EventEmitter.call(this);
-	this.playlist = playlist;
+	this.playlist = playlist.emitter();
 }
 
 util.inherits(Sync, EventEmitter);

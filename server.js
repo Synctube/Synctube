@@ -1,6 +1,6 @@
 var express = require('express');
 var app = express();
-var mu = require('mu2');
+var cons = require('consolidate');
 
 var config = require('./config');
 var sockets = require('./server/sockets');
@@ -10,14 +10,9 @@ var clientVersion = require('socket.io/node_modules/socket.io-client/package').v
 
 require('./server/sync');
 
-mu.root = __dirname + '/template';
-
-function render(res, file, data) {
-	if (app.settings.env === 'development') {
-		mu.clearCache(file);
-	}
-	mu.compileAndRender(file, data).pipe(res);
-}
+app.engine('html', cons.dust);
+app.set('view engine', 'html');
+app.set('views', __dirname + '/template');
 
 app.get('/', function (req, res) {
 	datastore.getTopRooms(function (err, rooms) {
@@ -41,15 +36,14 @@ app.get('/', function (req, res) {
 				res.json(data);
 			},
 			html: function (req, res) {
-				render(res, 'index.html', data);
+				res.render('index', data);
 			},
 		});
 	});
 });
 
 app.get('/rooms/:name', function (req, res) {
-	res.writeHead(200, { 'Content-Type': 'text/html; charset=utf8' });
-	render(res, 'room.html', {
+	res.render('room', {
 		socketioClientVersion: clientVersion,
 	});
 });

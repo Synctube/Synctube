@@ -45,8 +45,7 @@ function PlaylistEntryViewModel(entry) {
 	};
 
 	self.moveUp = function () {
-		var before = sync.playlist.before(key);
-		sync.move(key, before);
+		sync.moveUp(key);
 	};
 
 	youtube.getVideoSnippet(videoId, function (err, item) {

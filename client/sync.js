@@ -161,6 +161,11 @@ Sync.prototype.move = function (key, beforeKey) {
 	socket.emit('move', key, beforeKey);
 };
 
+Sync.prototype.moveUp = function (key) {
+	var before = playlist.before(key);
+	this.move(key, before);
+};
+
 Sync.prototype.shuffle = function () {
 	socket.emit('shuffle');
 };

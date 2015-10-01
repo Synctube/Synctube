@@ -3,67 +3,61 @@
  */
 
 var events = require('events');
+var videojs = require('videojs');
+var $ = require('jquery');
+
+require('videojs-youtube');
 
 /**
- * YouTube player.
+ * Videojs player.
  */
 
-var tag = document.createElement('script');
-tag.src = 'https://www.youtube.com/iframe_api';
-var firstScriptTag = document.getElementsByTagName('script')[0];
-firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-var youtube;
-window.onYouTubeIframeAPIReady = function () {
-	youtube = new YT.Player('player', {
-		playerVars: {
-			rel: 0,
-			showinfo: 0,
-		},
-		events: {
-			'onReady': onPlayerReady,
-			'onStateChange': onPlayerStateChange,
-		},
+var vjs;
+$(function () {
+	vjs = videojs('player', {
+		techOrder: ['youtube'],
+	}, function () {
+		function change () {
+			player.emit('change');
+		}
+		vjs.on('play', change);
+		vjs.on('pause', change);
+		vjs.on('seeked', change);
+		player.emit('ready');
 	});
-};
-
-function onPlayerReady (event) {
-	player.emit('ready');
-}
-
-function onPlayerStateChange (event) {
-	player.emit('change');
-}
+});
 
 /**
  * Player module interface.
  */
 
+var _current;
+
 var player = module.exports = exports = {
 	play: function () {
-		youtube.playVideo();
+		vjs.play();
 	},
 	pause: function () {
-		youtube.pauseVideo();
+		vjs.pause();
 	},
 	seek: function (time) {
-		youtube.seekTo(time + (this.isPlaying() ? 0.5 : 0), true);
+		vjs.currentTime(time + (this.isPlaying() ? 0.5 : 0));
 	},
 	load: function (video, time) {
-		youtube.loadVideoById(video.id, time);
+		_current = video.id;
+		vjs.src({ type: 'video/youtube', src: 'https://www.youtube.com/watch?v=' + video.id });
 	},
 	getVideo: function () {
-		var data = youtube.getVideoData();
-		return data ? data.video_id : null;
+		return _current;
 	},
 	getTime: function () {
-		return youtube.getCurrentTime();
+		return vjs.currentTime();
 	},
 	isPlaying: function () {
-		return youtube.getPlayerState() === YT.PlayerState.PLAYING;
+		return !vjs.paused();
 	},
 	isEnded: function () {
-		return youtube.getPlayerState() === YT.PlayerState.ENDED;
+		return vjs.ended();
 	},
 };
 

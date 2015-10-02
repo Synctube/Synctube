@@ -18,11 +18,14 @@ $(function () {
 		techOrder: ['youtube'],
 	}, function () {
 		function change () {
-			player.emit('change');
+			process.nextTick(function () {
+				player.emit('change');
+			});
 		}
-		vjs.on('play', change);
+		vjs.on('playing', change);
 		vjs.on('pause', change);
 		vjs.on('seeked', change);
+		vjs.on('ended', change);
 		player.emit('ready');
 	});
 });

@@ -19,6 +19,7 @@
         "request": "^2.53.0",
         "safesocket": "^1.0.0",
         "socket.io": "^1.3.5",
+        "videojs-youtube": "^1.2.13",
         "express": "^4.13.3"
     },
     "devDependencies": {
@@ -47,6 +48,7 @@
     "browserify-shim": {
         "jquery": "global:$",
         "knockout": "global:ko",
+        "videojs": "global:videojs",
         "socket.io-client": "global:io"
     },
     "cacheDirectories": ["node_modules", "bower_components"],

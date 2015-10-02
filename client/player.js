@@ -16,6 +16,23 @@ var vjs;
 $(function () {
 	vjs = videojs('player', {
 		techOrder: ['youtube'],
+		children: {
+			bigPlayButton: false,
+			controlBar: {
+				children: {
+					playToggle: false,
+					progressControl: {
+						children: {
+							seekBar: {
+								children: {
+									seekHandle: false,
+								},
+							},
+						},
+					},
+				},
+			},
+		},
 	}, function () {
 		function change () {
 			process.nextTick(function () {

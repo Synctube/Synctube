@@ -3,7 +3,7 @@
  */
 
 var async = require('async');
-var youtube = require('../lib/youtube');
+var media = require('../lib/media');
 var datastore = require('./datastore');
 var safesocket = require('safesocket');
 var sockets = require('./sockets');
@@ -47,10 +47,10 @@ sockets.on('listen', function (io) {
 			datastore.leave(name);
 		});
 
-		socket.on('add', safesocket(1, function (id, callback) {
-			youtube.getVideoLength(id, function (err, length) {
+		socket.on('add', safesocket(2, function (type, id, callback) {
+			media.getLength(type, id, function (err, length) {
 				if (err) { return callback(err); }
-				var video = { id: id, length: length };
+				var video = { id: id, length: length, type: type };
 				datastore.addVideo(name, video, callback);
 			});
 		}));

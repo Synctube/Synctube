@@ -5,7 +5,7 @@
 var ko = require('knockout');
 var moment = require('moment');
 var sync = require('./sync');
-var youtube = require('../lib/youtube');
+var media = require('../lib/media');
 
 require('moment-duration-format');
 
@@ -26,6 +26,7 @@ function PlaylistEntryViewModel(entry) {
 
 	var key = self.key = entry.key;
 	var videoId = entry.value.id;
+	var type = entry.value.type;
 	var length = entry.value.length;
 
 	self.title = ko.observable();
@@ -48,10 +49,10 @@ function PlaylistEntryViewModel(entry) {
 		sync.moveUp(key);
 	};
 
-	youtube.getVideoSnippet(videoId, function (err, item) {
+	media.getDetails(type, videoId, function (err, item) {
 		if (err) { return; }
 		self.title(item.title);
-		self.thumbnail(item.thumbnails.default.url);
+		self.thumbnail(item.thumbnail);
 	});
 }
 

@@ -3,10 +3,9 @@
  */
 
 var events = require('events');
+var media = require('../lib/media');
 var videojs = require('videojs');
 var $ = require('jquery');
-
-require('videojs-youtube');
 
 /**
  * Videojs player.
@@ -15,7 +14,7 @@ require('videojs-youtube');
 var vjs;
 $(function () {
 	vjs = videojs('player', {
-		techOrder: ['youtube'],
+		techOrder: media.getTechnologies(),
 		children: {
 			bigPlayButton: false,
 			controlBar: {
@@ -65,7 +64,7 @@ var player = module.exports = exports = {
 	},
 	load: function (video, time) {
 		_current = video.id;
-		vjs.src({ type: 'video/youtube', src: 'https://www.youtube.com/watch?v=' + video.id });
+		vjs.src(media.formatSource(video.type, video.id));
 	},
 	getVideo: function () {
 		return _current;

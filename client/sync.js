@@ -153,8 +153,8 @@ Sync.prototype.remove = function (key) {
 	socket.emit('delete', key);
 };
 
-Sync.prototype.add = function (id) {
-	socket.emit('add', id);
+Sync.prototype.add = function (type, id) {
+	socket.emit('add', type, id);
 };
 
 Sync.prototype.move = function (key, beforeKey) {

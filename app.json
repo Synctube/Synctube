@@ -1,0 +1,34 @@
+{
+  "name": "Synctube",
+  "scripts": {},
+  "env": {
+    "NPM_CONFIG_PRODUCTION": {
+      "required": true
+    },
+    "SYNCTUBE_CLIENT_YOUTUBE_APIKEY": {
+      "required": true
+    },
+    "SYNCTUBE_SERVER_YOUTUBE_APIKEY": {
+      "required": true
+    },
+    "SYNCTUBE_YOUTUBE_BATCH_DELAY": {
+      "required": true
+    },
+    "SYNCTUBE_YOUTUBE_BATCH_LIMIT": {
+      "required": true
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "addons": [
+    "heroku-redis"
+  ],
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-nodejs"
+    }
+  ]
+}

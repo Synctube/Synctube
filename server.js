@@ -8,6 +8,14 @@ var datastore = require('./server/datastore');
 
 var clientVersion = require('socket.io/node_modules/socket.io-client/package').version;
 
+var clientConfig = {
+	youtube: {
+		apiKey: config.youtube.clientApiKey,
+		batchDelay: config.youtube.batchDelay,
+		batchLimit: config.youtube.batchLimit,
+	},
+};
+
 require('./server/sync');
 
 app.engine('html', cons.dust);
@@ -44,6 +52,7 @@ app.get('/', function (req, res) {
 
 app.get('/rooms/:name', function (req, res) {
 	res.render('room', {
+		config: clientConfig,
 		socketioClientVersion: clientVersion,
 	});
 });

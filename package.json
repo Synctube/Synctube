@@ -26,7 +26,6 @@
         "bower": "^1.2.8",
         "browserify": "^9.0.8",
         "browserify-shim": "^3.8.5",
-        "envify": "^3.4.0",
         "exorcist": "^0.3.0",
         "less": "^2.5.0",
         "less-plugin-clean-css": "^1.5.0",
@@ -37,12 +36,11 @@
     },
     "browserify": {
         "transform": [
-            "envify",
             "browserify-shim"
         ]
     },
     "browser": {
-        "./config.js": "./config-client.js",
+        "./config.js": "./client/config.js",
         "request": "browser-request"
     },
     "browserify-shim": {

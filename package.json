@@ -65,6 +65,6 @@
         "dev": "parallelshell \"npm run watch\" \"npm run nodemon\"",
         "postinstall": "bower install && npm run build"
     },
-    "engines": { "node": "^0.10.36" },
+    "engines": { "node": "^5.6.0" },
     "private": true
 }

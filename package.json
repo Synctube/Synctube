@@ -51,7 +51,7 @@
     "scripts": {
         "start": "node .",
         "build": "npm run build:css && npm run build:js && npm run build:min",
-        "build:css": "node-sass --include-path bower_components --output-style compressed style/main.scss static/style.css",
+        "build:css": "node-sass --include-path bower_components --output-style compressed --source-map static/style.css.map --source-map-contents --source-map-root static/ style/main.scss static/style.css",
         "build:js": "npm run build:js:browse && npm run build:js:room",
         "build:js:browse": "browserify client/browse.js --debug > static/browse.js",
         "build:js:room": "browserify client/room.js --debug > static/room.js",

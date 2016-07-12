@@ -2,9 +2,6 @@
   "name": "Synctube",
   "scripts": {},
   "env": {
-    "NPM_CONFIG_PRODUCTION": {
-      "required": true
-    },
     "SYNCTUBE_CLIENT_YOUTUBE_APIKEY": {
       "required": true
     },

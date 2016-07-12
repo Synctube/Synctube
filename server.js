@@ -6,7 +6,7 @@ var config = require('./config');
 var sockets = require('./server/sockets');
 var datastore = require('./server/datastore');
 
-var clientVersion = require('socket.io/node_modules/socket.io-client/package').version;
+var clientVersion = require('socket.io-client/package').version;
 
 var clientConfig = {
 	youtube: {

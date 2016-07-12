@@ -2,7 +2,8 @@
 	"name": "synctube",
 	"dependencies": {
 		"octicons": "^2.4.1",
-		"video.js": "4.12.15",
+		"video.js": "^5.10.4",
+		"bootstrap-sass": "^3.3.6",
 		"bootswatch": "^3.0.0"
 	},
 	"private": true

@@ -1,0 +1,24 @@
+@import 'bootstrap-sass/assets/stylesheets/bootstrap';
+@import 'bootswatch/cyborg/variables';
+@import 'bootswatch/cyborg/bootswatch';
+
+$icon-font-path: '//netdna.bootstrapcdn.com/bootstrap/3.3.6/fonts/';
+
+$gray-even-darker: #181818;
+
+@import 'brand';
+@import 'navbar';
+@import 'playlist';
+
+$screen-lg: 1600px;
+$screen-md: 1200px;
+$screen-sm: 900px;
+$screen-xs: 600px;
+
+@import 'octicons/octicons/octicons.scss';
+
+$octicons-font-path: 'https://cdnjs.cloudflare.com/ajax/libs/octicons/2.4.1';
+
+@import 'video.js/src/css/video-js';
+
+$vjs-font-path: '//vjs.zencdn.net/f/3';

@@ -3,67 +3,80 @@
  */
 
 var events = require('events');
+var media = require('../lib/media');
+var videojs = require('videojs');
+var $ = require('jquery');
 
 /**
- * YouTube player.
+ * Videojs player.
  */
 
-var tag = document.createElement('script');
-tag.src = 'https://www.youtube.com/iframe_api';
-var firstScriptTag = document.getElementsByTagName('script')[0];
-firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-var youtube;
-window.onYouTubeIframeAPIReady = function () {
-	youtube = new YT.Player('player', {
-		playerVars: {
-			rel: 0,
-			showinfo: 0,
+var vjs;
+$(function () {
+	vjs = videojs('player', {
+		techOrder: media.getTechnologies(),
+		children: {
+			bigPlayButton: false,
+			controlBar: {
+				children: {
+					playToggle: false,
+					progressControl: {
+						children: {
+							seekBar: {
+								children: {
+									seekHandle: false,
+								},
+							},
+						},
+					},
+				},
+			},
 		},
-		events: {
-			'onReady': onPlayerReady,
-			'onStateChange': onPlayerStateChange,
-		},
+	}, function () {
+		function change () {
+			process.nextTick(function () {
+				player.emit('change');
+			});
+		}
+		vjs.on('playing', change);
+		vjs.on('pause', change);
+		vjs.on('seeked', change);
+		vjs.on('ended', change);
+		player.emit('ready');
 	});
-};
-
-function onPlayerReady (event) {
-	player.emit('ready');
-}
-
-function onPlayerStateChange (event) {
-	player.emit('change');
-}
+});
 
 /**
  * Player module interface.
  */
 
+var _current;
+
 var player = module.exports = exports = {
 	play: function () {
-		youtube.playVideo();
+		vjs.play();
 	},
 	pause: function () {
-		youtube.pauseVideo();
+		vjs.pause();
 	},
 	seek: function (time) {
-		youtube.seekTo(time + (this.isPlaying() ? 0.5 : 0), true);
+		vjs.currentTime(time + (this.isPlaying() ? 0.5 : 0));
 	},
 	load: function (video, time) {
-		youtube.loadVideoById(video.id, time);
+		_current = video.id;
+		vjs.src(media.formatSource(video.type, video.id));
 	},
 	getVideo: function () {
-		var data = youtube.getVideoData();
-		return data ? data.video_id : null;
+		return _current;
 	},
 	getTime: function () {
-		return youtube.getCurrentTime();
+		return vjs.currentTime();
 	},
 	isPlaying: function () {
-		return youtube.getPlayerState() === YT.PlayerState.PLAYING;
+		return !vjs.paused();
 	},
 	isEnded: function () {
-		return youtube.getPlayerState() === YT.PlayerState.ENDED;
+		return vjs.ended();
 	},
 };
 

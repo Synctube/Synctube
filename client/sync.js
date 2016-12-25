@@ -16,6 +16,10 @@ var util = require('util');
 var playlist = new LinkedMap();
 var simulation = new Simulation(playlist);
 
+simulation.on('state', function (state) {
+	sync.emit('state', state);
+});
+
 /**
  * Establish socket connection.
  */
@@ -136,8 +140,7 @@ player.on('ready', function () {
 
 function Sync () {
 	EventEmitter.call(this);
-	this.playlist = playlist;
-	this.state = simulation;
+	this.playlist = playlist.emitter();
 }
 
 util.inherits(Sync, EventEmitter);
@@ -150,12 +153,17 @@ Sync.prototype.remove = function (key) {
 	socket.emit('delete', key);
 };
 
-Sync.prototype.add = function (id) {
-	socket.emit('add', id);
+Sync.prototype.add = function (type, id) {
+	socket.emit('add', type, id);
 };
 
 Sync.prototype.move = function (key, beforeKey) {
 	socket.emit('move', key, beforeKey);
+};
+
+Sync.prototype.moveUp = function (key) {
+	var before = playlist.before(key);
+	this.move(key, before);
 };
 
 Sync.prototype.shuffle = function () {

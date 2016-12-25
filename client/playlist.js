@@ -5,7 +5,7 @@
 var ko = require('knockout');
 var moment = require('moment');
 var sync = require('./sync');
-var youtube = require('../lib/youtube');
+var media = require('../lib/media');
 
 require('moment-duration-format');
 
@@ -26,6 +26,7 @@ function PlaylistEntryViewModel(entry) {
 
 	var key = self.key = entry.key;
 	var videoId = entry.value.id;
+	var type = entry.value.type;
 	var length = entry.value.length;
 
 	self.title = ko.observable();
@@ -45,14 +46,13 @@ function PlaylistEntryViewModel(entry) {
 	};
 
 	self.moveUp = function () {
-		var before = sync.playlist.before(key);
-		sync.move(key, before);
+		sync.moveUp(key);
 	};
 
-	youtube.getVideoSnippet(videoId, function (err, item) {
+	media.getDetails(type, videoId, function (err, item) {
 		if (err) { return; }
 		self.title(item.title);
-		self.thumbnail(item.thumbnails.default.url);
+		self.thumbnail(item.thumbnail);
 	});
 }
 
@@ -83,8 +83,7 @@ var playlist = module.exports = exports = new (function () {
 	var self = this;
 	self.entries = ko.observableArray();
 	self.currentKey = ko.observable(null);
-	sync.state.on('state', function () {
-		var state = sync.state.getState();
+	sync.on('state', function (state) {
 		self.currentKey(state.key || null);
 	});
 	self.shuffle = function () {

@@ -7,7 +7,7 @@
     <script src="//code.jquery.com/jquery.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/knockout/3.3.0/knockout-min.js"></script>
-    <script src="//cdn.socket.io/socket.io-{{socketioClientVersion}}.js"></script>
+    {+header/}
   </head>
   <body>
     <nav class="navbar navbar-default" role="navigation">
@@ -27,3 +27,7 @@
         </ul>
       </div>
     </nav>
+    {+bodyContent/}
+    {+bodyScripts/}
+  </body>
+</html>

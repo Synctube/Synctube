@@ -24,8 +24,7 @@ module.exports = exports = new (function () {
 		}
 	};
 	self.playing = ko.observable(false);
-	sync.state.on('state', function () {
-		var state = sync.state.getState();
+	sync.on('state', function (state) {
 		self.playing(state.playing);
 	});
 })();

@@ -46,7 +46,7 @@ local _extract = function (key)
   local tail = _getNode(node.t)
   tail.h = node.h
   _setNode(node.t, tail)
-  return node.v
+  return node
 end
 
 -------------------
@@ -117,13 +117,14 @@ local insert = function (key, value, before)
 end
 
 local delete = function (key)
-  _extract(key)
+  local node = _extract(key)
   _deleteNode(key)
+  return node
 end
 
 local move = function (key, before)
-  local value = _extract(key)
-  insert(key, value, before)
+  local node = _extract(key)
+  insert(key, node.v, before)
   redis.call('PUBLISH', _eventChannel, cjson.encode({room=_room,event='move',args={key,before}}))
 end
 
@@ -274,11 +275,15 @@ local delVideo = function (time, key)
   local state = updateState(time)
   local video = getValue(key)
   addLength(-video.length)
-  delete(key)
+  local node = delete(key)
   redis.call('PUBLISH', _eventChannel, cjson.encode({room=_room,event='remove',args={key}}))
   if state.key == key then
-    state.playing = false
-    state.key = nil
+    if node.h ~= 0 then
+      state.key = node.h
+    else
+      state.playing = false
+      state.key = nil
+    end
     state.offset = 0
   end
   setState(state, true)

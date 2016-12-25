@@ -6,6 +6,7 @@ var ko = require('knockout');
 var moment = require('moment');
 var sync = require('./sync');
 var youtube = require('../lib/youtube');
+var media = require('../lib/media');
 
 require('moment-duration-format');
 
@@ -30,7 +31,7 @@ function SearchResultViewModel (result) {
 	self.thumbnail = result.item.snippet.thumbnails.default.url;
 
 	self.add = function () {
-		sync.add(videoId);
+		sync.add('youtube', videoId);
 	};
 }
 
@@ -49,12 +50,12 @@ module.exports = exports = new (function () {
 			return;
 		}
 		self.link('');
-		var id = youtube.parseUrl(query);
-		if (id === null) {
+		var parsed = media.parseUrl(query);
+		if (parsed === null) {
 			self.lastQuery(query);
 			youtube.search(query, _searchResult);
 		} else {
-			sync.add(id);
+			sync.add(parsed.type, parsed.id);
 		}
 	};
 	self.lastQuery = ko.observable();

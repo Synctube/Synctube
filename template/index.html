@@ -1,4 +1,8 @@
-{{> header.html}}
+{>"container.html"/}
+{+bodyScripts}
+<script src="/browse.min.js"></script>
+{/bodyScripts}
+{+bodyContent}
 <div class="jumbotron">
   <div class="container">
     <h1>Watch together.</h1>
@@ -25,19 +29,17 @@
       </tr>
     </thead>
     <tbody>
-    {{#rooms}}
+    {#rooms}
       <tr>
-        <td><a href="/rooms/{{encoded}}">{{name}}</a></td>
-        <td>{{connected}}</td>
+        <td><a href="/rooms/{encoded}">{name}</a></td>
+        <td>{connected}</td>
       </tr>
-    {{/rooms}}
-    {{^rooms}}
+    {:else}
       <tr>
         <td colspan="2" class="text-center text-muted">There are no rooms right now. Create your own!</td>
       </tr>
-    {{/rooms}}
+    {/rooms}
     </tbody>
   </table>
 </div>
-<script src="/browse.min.js"></script>
-{{> footer.html}}
+{/bodyContent}

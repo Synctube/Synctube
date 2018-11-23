@@ -61,8 +61,7 @@
         "watch:css": "watch \"npm run build:css\" less/",
         "watch:js": "watch \"npm run build:js && npm run build:min\" lib/ client/",
         "nodemon": "nodemon --watch lib --watch server --watch server.js --watch template --ext js,html server.js",
-        "dev": "parallelshell \"npm run watch\" \"npm run nodemon\"",
-        "postinstall": "bower install && npm run build"
+        "dev": "parallelshell \"npm run watch\" \"npm run nodemon\""
     },
     "engines": { "node": "^5.6.0" },
     "private": true

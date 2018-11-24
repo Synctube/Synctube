@@ -3,7 +3,7 @@
  */
 
 var async = require('async');
-var redis = require('redis-url');
+var redis = require('redis');
 var Scripto = require('redis-scripto');
 var EventEmitter = require('events').EventEmitter;
 var util = require('util');
@@ -28,7 +28,7 @@ var datastore = module.exports = exports = new Datastore();
  * Scripting client.
  */
 
-var client = redis.connect();
+var client = redis.createClient(process.env.SYNCTUBE_REDIS_URL);
 var scripts = new Scripto(client);
 scripts.loadFromDir(__dirname + '/scripts/');
 
@@ -36,7 +36,7 @@ scripts.loadFromDir(__dirname + '/scripts/');
  * Events.
  */
 
-var subscriber = redis.connect();
+var subscriber = redis.createClient(process.env.SYNCTUBE_REDIS_URL);
 subscriber.on('ready', function () {
 	subscriber.on('message', function (channel, message) {
 		var obj = JSON.parse(message);

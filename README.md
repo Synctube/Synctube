@@ -2,9 +2,7 @@
 
 Realtime web video synchronization.
 
-## Installation
+## Docker Usage
 
-    git clone https://github.com/Synctube/Synctube.git
-    npm install
-    bower install
-    npm run build
+    docker build -t synctube .
+    docker run --env-file .env -d -p 80:3000 synctube

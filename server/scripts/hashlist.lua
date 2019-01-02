@@ -76,6 +76,9 @@ local iterate = function (start, stop)
     if not key then return end
     if key == 0 then
       key = _getNode(0).h
+      if key == stop then
+        return
+      end
     end
     if key ~= 0 then
       local cur = key
